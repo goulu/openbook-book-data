@@ -3,16 +3,16 @@
 Plugin Name: OpenBook Book Data
 Plugin URI: http://johnmiedema.ca/openbook-wordpress-plugin/
 Description: Shows book cover image, title, author, and publisher from http://openlibrary.org
-Version: 1.2
+Version: 1.2 beta
 Author: John Miedema
 Author URI: http://johnmiedema.ca
 =========================================================================
 HISTORY
 
-Version 1.2
+Version 1.2 beta
 - Tests for JSON library when plugin is activated
 
-Version 1.1
+Version 1.1 beta
 - Replaced file_get_contents with curl because disallowed on some servers
 - Replaced forced anchor target=_blank with optional argument, anchorattributes, to let user specify any anchor attributes
 
