@@ -3,9 +3,17 @@
 Plugin Name: OpenBook Book Data
 Plugin URI: http://johnmiedema.ca/openbook-wordpress-plugin/
 Description: Shows book cover image, title, author, and publisher from http://openlibrary.org
-Version: 1.0
+Version: 1.1 beta
 Author: John Miedema
 Author URI: http://johnmiedema.ca
+=========================================================================
+HISTORY
+
+Version 1.1
+- Replaced file_get_contents with curl because disallowed on some servers
+- Replaced forced anchor target=_blank with optional argument, anchorattributes, to let user specify any anchor attributes
+
+=========================================================================
 */
 
 function openbook_insertbookdata($content) {
@@ -25,6 +33,7 @@ function openbook_insertbookdata($content) {
 		$displayoptions = ""; //""=default, 1=cover only, 2=text only
 		$fullcover = false;
 		$publisherlink = "";
+		$anchorattributes = "";
 
 		$opentagend = $opentagstart + 9;
 		$args_start = $opentagend + 1;
@@ -38,6 +47,7 @@ function openbook_insertbookdata($content) {
 		if ($argcount>=3) $displayoptions=$args[2];
 		if ($argcount>=4) $fullcover=$args[3];
 		if ($argcount>=5) $publisherlink=$args[4];
+		if ($argcount>=6) $anchorattributes=$args[5];
 
 		$tagstringlength = ($closetagstart + 11) - $opentagstart;
 		$tagstring = substr($content, $opentagstart, $tagstringlength);
@@ -54,7 +64,7 @@ function openbook_insertbookdata($content) {
 		//query OpenLibrary for internal IDs that match the ISBN
 		//use %22 for quotes, %20 for spaces
 		$url_bookkeys = "http://openlibrary.org/api/search?q={%22query%22:%22(isbn_10:(".$isbn.")%20OR%20isbn_13:(".$isbn."))%22}&text=true";
-		$bookkeys = file_get_contents($url_bookkeys);
+		$bookkeys = getUrlContents($url_bookkeys);
 		$obj = json_decode($bookkeys);
 		$bookkeyresult = $obj->{'result'};
 
@@ -73,7 +83,7 @@ function openbook_insertbookdata($content) {
 		//3. Get the book data
 
 		$url = "http://openlibrary.org/api/get?key=".$bookkey."&text=true";
-		$bookdata = file_get_contents($url);
+		$bookdata = getUrlContents($url);
 
 		$obj = json_decode($bookdata);
 		$bookdataresult = $obj->{'result'};
@@ -90,7 +100,7 @@ function openbook_insertbookdata($content) {
 		  for($i=0;$i<count($authors);$i++) {
 				$authorkey = $authors[$i] ->{'key'};
 				$url = "http://openlibrary.org/api/get?key=".$authorkey."&text=true";
-				$authordata = file_get_contents($url);
+				$authordata = getUrlContents($url);
 				$obj = json_decode($authordata);
 				$authorresult = $obj->{'result'};
 				$name = $authorresult ->{'name'};
@@ -150,10 +160,10 @@ function openbook_insertbookdata($content) {
 
 			$html_coverimage = "<img src='" . $coverimage . "' alt='' style='float:left;padding-right:15px;padding-bottom:15px;" . $html_size . "' onerror=this.style.padding='0px'; />";
 
-			$html_coverimage = "<a href='" . $bookpage . "' target='_blank'>" . $html_coverimage . "</a>";
+			$html_coverimage = "<a href='" . $bookpage . "' " . $anchorattributes . " >" . $html_coverimage . "</a>";
 
 			//title
-			$html_title = "<a href='" . $bookpage . "' target='_blank'><i>" . $title . "</i></a>";
+			$html_title = "<a href='" . $bookpage . "' " . $anchorattributes . " ><i>" . $title . "</i></a>";
 
 			//author
 			$html_authors = $authors;
@@ -167,7 +177,7 @@ function openbook_insertbookdata($content) {
 
 			//assemble
 			//the div id and isbn allows for styling and dhtml handling
-			$html_bookdata = "<div id=divOpenBook isbn='" . $isbn . "'><!-- OpenBook WordPress Plugin http://johnmiedema.ca -->";
+			$html_bookdata = "<div id=divOpenBook isbn='" . $isbn . "'>";
 			if ($displayoptions != 2) $html_bookdata = $html_bookdata . $html_coverimage;
 			if ($displayoptions != 1) $html_bookdata = $html_bookdata . $html_text . "<br />";
 			$html_bookdata = $html_bookdata . "</div>";
@@ -184,6 +194,25 @@ function openbook_insertbookdata($content) {
 	}
 
 	echo $content ;
+}
+
+//this method replaces file_get_contents, which is sometimes disallowed on servers
+function getUrlContents($url)
+{
+	// Establish a cURL handle.
+	$ch = curl_init($url);
+
+	// Set our options
+	curl_setopt($ch, CURLOPT_HEADER, false); //false=do not include headers
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); //true=return as string
+
+	// Execute the request
+	$output = curl_exec($ch);
+
+	// Close the cURL session.
+	curl_close($ch);
+
+	return $output;
 }
 
 add_filter('the_content', 'openbook_insertbookdata');
