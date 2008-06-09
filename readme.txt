@@ -35,14 +35,6 @@ If an image is missing, OpenBook will show a blank for the image. If the author 
 
 I have noticed that the Open Library search is sometimes down for a short while, then comes back up later. This is an availability matter at OpenLibrary. The down time seems infrequent. Likely the data will be there a short while later.
 
-== Future Release Plans ==
-
-* Allow multiple tags in one page or post. The current version only picks up the first set of tags. A future version will allow any number of tags.
-
-* Insert data in the location of the tags. The current version places the data in the upper left corner. A future version will place the data wherever the tags are located.
-
-* Allow other numbers than ISBN. The current version only searches by ISBN. A future version will search by other cataloguing numbers. 
-
 == Options ==
 
 There are few extra options you can control if you want by adding extra arguments between the tags. 
@@ -69,4 +61,11 @@ There are few extra options you can control if you want by adding extra argument
 
 [openbook]0836917952,,,,,target=_blank[/openbook]
 
+== Future Release Plans ==
+
+* Allow multiple tags in one page or post. The current version only picks up the first set of tags. A future version will allow any number of tags.
+
+* Insert data in the location of the tags. The current version places the data in the upper left corner. A future version will place the data wherever the tags are located.
+
+* Allow other numbers than ISBN. The current version only searches by ISBN. A future version will search by other cataloguing numbers. 
 
