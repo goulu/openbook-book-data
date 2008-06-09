@@ -39,25 +39,25 @@ I have noticed that the Open Library search is sometimes down for a short while,
 
 There are few extra options you can control if you want by adding extra arguments between the tags. 
 
-1. Book Version. Sometimes there are multiple versions of a book in Open Library for a single ISBN. By default, OpenBook uses the most recent version. If you prefer an earlier version, insert the version number as a second argument, like so: 
+Book Version. Sometimes there are multiple versions of a book in Open Library for a single ISBN. By default, OpenBook uses the most recent version. If you prefer an earlier version, insert the version number as a second argument, like so: 
 
 [openbook]0836917952,2[/openbook]
 
-2. Display Options. OpenBook displays both the cover image and text data by default. The following options are also available: 1=cover only. 2=Text only. Insert this value as a third argument:
+Display Options. OpenBook displays both the cover image and text data by default. The following options are also available: 1=cover only. 2=Text only. Insert this value as a third argument:
 
 [openbook]0836917952,2,1[/openbook]
 
-3. If you want to skip the second argument, just put a comma in to hold the place: [openbook]0836917952,,1[/openbook]
+If you want to skip the second argument, just put a comma in to hold the place: [openbook]0836917952,,1[/openbook]
 
-4. Full Cover. OpenBook shows a reduced sized version of the source image by default. If you want the orignal size, set the fourth argument to true:
+Full Cover. OpenBook shows a reduced sized version of the source image by default. If you want the orignal size, set the fourth argument to true:
 
 [openbook]0836917952,,,true[/openbook]
 
-5. Publisher Link. If you include a link to a publisher's website as the fifth argument, the publisher name will be wrapped in that link:
+Publisher Link. If you include a link to a publisher's website as the fifth argument, the publisher name will be wrapped in that link:
 
 [openbook]0836917952,,,,http://randomhouse.ca[/openbook]
 
-6.Anchor Attributes. If you want your links to open in a new window, you can specify "target=_blank" here, without the quotes:
+Anchor Attributes. If you want your links to open in a new window, you can specify "target=_blank" here, without the quotes:
 
 [openbook]0836917952,,,,,target=_blank[/openbook]
 
