@@ -3,7 +3,6 @@ Contributors: johnmiedema
 Tags: book, books, reading, bookreviews, library, libraries
 Requires at least: 2.5
 Tested up to: 2.5.1
-Stable tag: 1.1
 
 OpenBook displays a book cover image, title, author, and publisher inside posts or pages using data from Open Library 
 

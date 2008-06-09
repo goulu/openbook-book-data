@@ -3,11 +3,14 @@
 Plugin Name: OpenBook Book Data
 Plugin URI: http://johnmiedema.ca/openbook-wordpress-plugin/
 Description: Shows book cover image, title, author, and publisher from http://openlibrary.org
-Version: 1.1
+Version: 1.2
 Author: John Miedema
 Author URI: http://johnmiedema.ca
 =========================================================================
 HISTORY
+
+Version 1.2
+- Tests for JSON library when plugin is activated
 
 Version 1.1
 - Replaced file_get_contents with curl because disallowed on some servers
@@ -197,8 +200,7 @@ function openbook_insertbookdata($content) {
 }
 
 //this method replaces file_get_contents, which is sometimes disallowed on servers
-function getUrlContents($url)
-{
+function getUrlContents($url) {
 	// Establish a cURL handle.
 	$ch = curl_init($url);
 
@@ -214,6 +216,18 @@ function getUrlContents($url)
 
 	return $output;
 }
+
+//PHP5 is required for the JSON libraries
+function openbook_activation_check(){
+
+	if(!function_exists('json_decode') ) {
+
+    	deactivate_plugins(basename('openbook.php')); //deactivate OpenBook
+     	wp_die("Sorry, but you cannot run this plugin, as the JSON libraries were not found.");
+	}
+}
+
+register_activation_hook('openbook.php', 'openbook_activation_check');
 
 add_filter('the_content', 'openbook_insertbookdata');
 
