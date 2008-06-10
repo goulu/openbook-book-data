@@ -25,6 +25,8 @@ Please don't hesitate to contact me with any error reports or questions. Contact
 
 When the post is displayed, it will include a book cover image, title, author(s), and publisher(s) in the upper left corner. The cover image and title will link to the full entry on Open Library. 
 
+Important: OpenBook requires the JSON library that comes with PHP 5.2. When you activate OpenBook, it checks for the required function. If missing, OpenBook will display a message and deactivate itself. Upgrading to PHP 5 may be a simple matter on the control panel of your server (e.g., Netfirms, http://support.netfirms.com/article.php?id=713). Otherwise, look for a future version of OpenBook.
+
 == Frequently Asked Questions ==
 
 * What if the cover image or data is missing in Open Library?
