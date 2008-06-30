@@ -11,7 +11,7 @@ OpenBook displays a book cover image, title, author, and publisher inside posts 
 
 OpenBook is for book reviewers, book bloggers, library webmasters, anyone who wants to put book covers and data on their WordPress blog or website. 
 
-Open Library (http://openlibrary.org) is a neutral source of book data. Best of all, you can add titles and modify the data. It's like Wikipedia for books.
+Open Library (http://openlibrary.org) is the only source of bibliographic data that is both open source and open data, hence the OpenBook label. This means that the technical knowledge is shared for everyone's good. It also means anyone can add and modify titles; this is especially good for independent publishers that might not get represented elsewhere. It's like Wikipedia for books.
 
 Please don't hesitate to contact me with any error reports or questions. Contact me at http://johnmiedema.ca or openbook@johnmiedema.ca.
 
@@ -27,9 +27,13 @@ When the post is displayed, it will include a book cover image, title, author(s)
 
 Important: OpenBook requires the JSON library that comes with PHP 5.2. When you activate OpenBook, it checks for the required function. If missing, OpenBook will display a message and deactivate itself. Upgrading to PHP 5 may be a simple matter on the control panel of your server (e.g., Netfirms, http://support.netfirms.com/article.php?id=713). Otherwise, look for a future version of OpenBook.
 
-== Frequently Asked Questions ==
+== Anticipated Questions ==
 
-* What if the cover image or data is missing in Open Library?
+* What if the title is not in Open Library? Or does not have an ISBN?
+
+Open Libary allows you to add titles, but they currently have a delay in indexing the new title in their search engine. With version 1.2 beta of OpenBook, you can use the Open Library number found in the Open Library URL, e.g., [openbook]/b/OL13489256M[/openbook] from http://openlibrary.org/b/OL13489256M.
+
+* What if the cover image or other data is missing in Open Library?
 
 If an image is missing, OpenBook will show a blank for the image. If the author is missing, OpenBook will use the "By Statement" or "Contributions". But why not go to the Open Library website and add the data!
 
@@ -69,5 +73,4 @@ Anchor Attributes. If you want your links to open in a new window, you can speci
 
 * Insert data in the location of the tags. The current version places the data in the upper left corner. A future version will place the data wherever the tags are located.
 
-* Allow other numbers than ISBN. The current version only searches by ISBN. A future version will search by other cataloguing numbers. 
 

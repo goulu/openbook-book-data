@@ -2,12 +2,18 @@
 /*
 Plugin Name: OpenBook Book Data
 Plugin URI: http://johnmiedema.ca/openbook-wordpress-plugin/
-Description: Shows book cover image, title, author, and publisher from http://openlibrary.org
-Version: 1.1.1 beta
+Description: Displays the book cover image, title, author, and publisher from http://openlibrary.org
+Version: 1.2 beta
 Author: John Miedema
 Author URI: http://johnmiedema.ca
 =========================================================================
 HISTORY
+
+Version 1.2 beta
+- Can use the OL number from the Open Library URL instead of ISBN
+	- compensates for Open Library delay in adding new titles to their search index
+	- can display titles that do not have an ISBN
+- Reduced bottom padding to 10px
 
 Version 1.1.1 beta
 - Tests for JSON library when plugin is activated
@@ -31,7 +37,7 @@ function openbook_insertbookdata($content) {
 		//===================================================
 		//1. Extract the arguments
 
-		$isbn = "";
+		$booknumber = "";
 		$bookversion = "";
 		$displayoptions = ""; //""=default, 1=cover only, 2=text only
 		$fullcover = false;
@@ -45,7 +51,7 @@ function openbook_insertbookdata($content) {
 
 		$argcount = count($args);
 
-		$isbn=$args[0];
+		$booknumber=$args[0];
 		if ($argcount>=2) $bookversion=$args[1];
 		if ($argcount>=3) $displayoptions=$args[2];
 		if ($argcount>=4) $fullcover=$args[3];
@@ -56,29 +62,40 @@ function openbook_insertbookdata($content) {
 		$tagstring = substr($content, $opentagstart, $tagstringlength);
 
 		//===================================================
-		//2. Map the ISBN to one OpenLibrary book key
+		//2. Map to one OpenLibrary book key
+		//if the book number is a standard Open Library book key, use it
+		//else assume it is an ISBN and lookup the book key
 
-		//clean ISBN
-		//dash - 13-digit ISBNs often have one, but not used by OpenLibrary
-		//spaces
-		$isbn = str_replace("-", "", $isbn);
-		$isbn = str_replace(" ", "", $isbn);
+		$obn_start = stripos($booknumber,"/b/OL");
+		if (is_integer($obn_start)) {
+			$bookkey = $booknumber;
+			$bookversioncount = 1;
+		}
+		else {
+			$isbn = $booknumber;
 
-		//query OpenLibrary for internal IDs that match the ISBN
-		//use %22 for quotes, %20 for spaces
-		$url_bookkeys = "http://openlibrary.org/api/search?q={%22query%22:%22(isbn_10:(".$isbn.")%20OR%20isbn_13:(".$isbn."))%22}&text=true";
-		$bookkeys = getUrlContents($url_bookkeys);
-		$obj = json_decode($bookkeys);
-		$bookkeyresult = $obj->{'result'};
+			//clean ISBN
+			//dash - 13-digit ISBNs often have one, but not used by OpenLibrary
+			//spaces
+			$isbn = str_replace("-", "", $isbn);
+			$isbn = str_replace(" ", "", $isbn);
 
-		//there can be multiple unique keys for different versions
-		//if the user has not provided a version, use the first one (assumed order of recency)
-		$bookversioncount = count($bookkeyresult);
-		if ($bookversion == "") $bookversion = 1;
-		elseif ($bookversion > $bookversioncount) $bookversion = $bookversioncount; //set to max version
-		$bookversion = $bookversion - 1; //to match zero-based array
+			//query OpenLibrary for internal IDs that match the ISBN
+			//use %22 for quotes, %20 for spaces
+			$url_bookkeys = "http://openlibrary.org/api/search?q={%22query%22:%22(isbn_10:(".$isbn.")%20OR%20isbn_13:(".$isbn."))%22}&text=true";
+			$bookkeys = getUrlContents($url_bookkeys);
+			$obj = json_decode($bookkeys);
+			$bookkeyresult = $obj->{'result'};
 
-		$bookkey= $bookkeyresult[$bookversion];
+			//there can be multiple unique keys for different versions
+			//if the user has not provided a version, use the first one (assumed order of recency)
+			$bookversioncount = count($bookkeyresult);
+			if ($bookversion == "") $bookversion = 1;
+			elseif ($bookversion > $bookversioncount) $bookversion = $bookversioncount; //set to max version
+			$bookversion = $bookversion - 1; //to match zero-based array
+
+			$bookkey = $bookkeyresult[$bookversion];
+		}
 
 		$bookpage = "http://openlibrary.org" . $bookkey;
 
@@ -102,8 +119,8 @@ function openbook_insertbookdata($content) {
 		if (is_array($authors)) {
 		  for($i=0;$i<count($authors);$i++) {
 				$authorkey = $authors[$i] ->{'key'};
-				$url = "http://openlibrary.org/api/get?key=".$authorkey."&text=true";
-				$authordata = getUrlContents($url);
+				$url_author = "http://openlibrary.org/api/get?key=".$authorkey."&text=true";
+				$authordata = getUrlContents($url_author);
 				$obj = json_decode($authordata);
 				$authorresult = $obj->{'result'};
 				$name = $authorresult ->{'name'};
@@ -161,7 +178,7 @@ function openbook_insertbookdata($content) {
 			$html_size = "";
 			if ($fullcover == false || $fullcover == "false") $html_size = "max-width:150px;max-height:225px;";
 
-			$html_coverimage = "<img src='" . $coverimage . "' alt='' style='float:left;padding-right:15px;padding-bottom:15px;" . $html_size . "' onerror=this.style.padding='0px'; />";
+			$html_coverimage = "<img src='" . $coverimage . "' alt='' style='float:left;padding-right:15px;padding-bottom:10px;" . $html_size . "' onerror=this.style.padding='0px'; />";
 
 			$html_coverimage = "<a href='" . $bookpage . "' " . $anchorattributes . " >" . $html_coverimage . "</a>";
 
@@ -196,7 +213,7 @@ function openbook_insertbookdata($content) {
 		$content = $html_bookdata . $content;
 	}
 
-	echo $content ;
+	echo $content;
 }
 
 //this method replaces file_get_contents, which is sometimes disallowed on servers
