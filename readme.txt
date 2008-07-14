@@ -13,6 +13,8 @@ OpenBook is for book reviewers, book bloggers, library webmasters, anyone who wa
 
 Open Library (http://openlibrary.org) is the only source of bibliographic data that is both open source and open data, hence the OpenBook label. This means that the technical knowledge is shared for everyone's good. It also means anyone can add and modify titles; this is especially good for independent publishers that might not get represented elsewhere. It's like Wikipedia for books.
 
+Latest Update: Version 1.3 beta. If the Open Library data source is temporarily unavailable, a message indicating so is placed where the data would have been displayed, and the rest of the post displays normally.
+
 Please don't hesitate to contact me with any error reports or questions. Contact me at http://johnmiedema.ca or openbook@johnmiedema.ca.
 
 == Installation ==
@@ -27,7 +29,7 @@ When the post is displayed, it will include a book cover image, title, author(s)
 
 Important: OpenBook requires the JSON library that comes with PHP 5.2. When you activate OpenBook, it checks for the required function. If missing, OpenBook will display a message and deactivate itself. Upgrading to PHP 5 may be a simple matter on the control panel of your server (e.g., Netfirms, http://support.netfirms.com/article.php?id=713). Otherwise, look for a future version of OpenBook.
 
-== Anticipated Questions ==
+== Frequently Asked Questions ==
 
 * What if the title is not in Open Library? Or does not have an ISBN?
 
@@ -37,9 +39,9 @@ Open Libary allows you to add titles, but they currently have a delay in indexin
 
 If an image is missing, OpenBook will show a blank for the image. If the author is missing, OpenBook will use the "By Statement" or "Contributions". But why not go to the Open Library website and add the data!
 
-* The book data did not load after a brief delay (about 15 seconds)
+* What happens if Open Library is down or unavailable?
 
-I have noticed that the Open Library search is sometimes down for a short while, then comes back up later. This is an availability matter at OpenLibrary. The down time seems infrequent. Likely the data will be there a short while later.
+Version 1.3 beta of OpenBook detects when Open Library is down and inserts a message where the data would go: "Open Library Data Unavailable". When Open Library becomes available, the book data will be displayed normally.
 
 == Options ==
 
@@ -66,6 +68,10 @@ Publisher Link. If you include a link to a publisher's website as the fifth argu
 Anchor Attributes. If you want your links to open in a new window, you can specify "target=_blank" here, without the quotes:
 
 [openbook]0836917952,,,,,target=_blank[/openbook]
+
+Open Library Timeout. The default timeout for connecting to Open Library and completing the call is ten seconds. You can change this timeout:
+
+[openbook]0836917952,,,,,,30[/openbook]
 
 == Future Release Plans ==
 
