@@ -3,11 +3,15 @@
 Plugin Name: OpenBook Book Data
 Plugin URI: http://johnmiedema.ca/openbook-wordpress-plugin/
 Description: Displays the book cover image, title, author, and publisher from http://openlibrary.org
-Version: 1.3 beta
+Version: 1.3.1 beta
 Author: John Miedema
 Author URI: http://johnmiedema.ca
 =========================================================================
 HISTORY
+
+Version 1.3.1 beta
+- handles image sizing for IE6/IE5 too
+- inline style removes border from image
 
 Version 1.3 beta
 - Added configurable timeout for curl calls b/c Open Library is down at times, default=5 sec
@@ -182,9 +186,9 @@ function openbook_insertbookdata($content) {
 			{
 				//coverimage
 				$html_size = "";
-				if ($fullcover == false || $fullcover == "false") $html_size = "max-width:150px;max-height:225px;";
+				if ($fullcover == false || $fullcover == "false") $html_size = "width:150px;height:225px;width: expression(this.width > 150 ? 150: true); height: expression(this.height > 225 ? 225: true);";
 
-				$html_coverimage = "<img src='" . $coverimage . "' alt='' style='float:left;padding-right:15px;padding-bottom:10px;" . $html_size . "' onerror=this.style.padding='0px'; />";
+				$html_coverimage = "<img src='" . $coverimage . "' alt='' border=0 style='float:left;padding-right:15px;padding-bottom:10px;" . $html_size . "' onerror=this.style.padding='0px'; />";
 
 				$html_coverimage = "<a href='" . $bookpage . "' " . $anchorattributes . " >" . $html_coverimage . "</a>";
 

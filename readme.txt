@@ -13,7 +13,7 @@ OpenBook is for book reviewers, book bloggers, library webmasters, anyone who wa
 
 Open Library (http://openlibrary.org) is the only source of bibliographic data that is both open source and open data, hence the OpenBook label. This means that the technical knowledge is shared for everyone's good. It also means anyone can add and modify titles; this is especially good for independent publishers that might not get represented elsewhere. It's like Wikipedia for books.
 
-Latest Update: Version 1.3 beta. If the Open Library data source is temporarily unavailable, a message indicating so is placed where the data would have been displayed, and the rest of the post displays normally.
+Latest Update: Version 1.3.1 beta. Minor update makes images display in proper size in IE6/IE5.
 
 Please don't hesitate to contact me with any error reports or questions. Contact me at http://johnmiedema.ca or openbook@johnmiedema.ca.
 
