@@ -30,11 +30,6 @@ Please don't hesitate to contact me with any error reports or questions. Contact
 
 When the post is displayed, it will include a book cover image, title, author(s), and publisher(s) in the upper left corner. The cover image and title will link to the full entry on Open Library. 
 
-== Screenshots ==
-
-1. This screenshot shows how the [openbook] tags with an ISBN inserted between them. This is all you have to insert in a post or page.
-2. This screenshot shows how the tags will be rendered with book data from Open Library.
-
 == Frequently Asked Questions ==
 
 * What if the title is not in Open Library? Or does not have an ISBN?
@@ -48,6 +43,11 @@ If an image is missing, OpenBook will show a blank for the image. If the author 
 * What happens if Open Library is down or unavailable?
 
 Version 1.3 beta of OpenBook detects when Open Library is down and inserts a message where the data would go: "Open Library Data Unavailable". When Open Library becomes available, the book data will be displayed normally.
+
+== Screenshots ==
+
+1. This screenshot shows the [openbook] tags with an ISBN inserted between them. This is all you have to insert into a post or page.
+2. This screenshot shows how the tags will be rendered with book data from Open Library.
 
 == Options ==
 
