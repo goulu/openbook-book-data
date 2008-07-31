@@ -15,7 +15,7 @@ Open Library (http://openlibrary.org) is the only source of bibliographic data t
 
 Important: To use OpenBook, your server must use PHP 5 or higher. Upgrading to PHP 5 may be a simple matter on the control panel of your server (e.g., Netfirms, http://support.netfirms.com/article.php?id=713). Otherwise, look for a future version of OpenBook.
 
-Latest Update: Version 1.4 beta. If json_decode is missing, uses local version.
+Latest Update: Version 1.4 beta. Works with PHP 5+ (not just 5.2).
 
 Please don't hesitate to contact me with any error reports or questions. Contact me at http://johnmiedema.ca or openbook@johnmiedema.ca.
 
@@ -43,11 +43,6 @@ If an image is missing, OpenBook will show a blank for the image. If the author 
 * What happens if Open Library is down or unavailable?
 
 Version 1.3 beta of OpenBook detects when Open Library is down and inserts a message where the data would go: "Open Library Data Unavailable". When Open Library becomes available, the book data will be displayed normally.
-
-== Screenshots ==
-
-1. This screenshot shows the [openbook] tags with an ISBN inserted between them. This is all you have to insert into a post or page.
-2. This screenshot shows how the tags will be rendered with book data from Open Library.
 
 == Options ==
 
