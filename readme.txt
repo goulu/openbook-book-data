@@ -24,9 +24,9 @@ Please don't hesitate to contact me with any error reports or questions. Contact
 1. Delete any previous version of openbook in the `/wp-content/plugins/` directory
 2. Upload the entire openbook-book-data folder to the `/wp-content/plugins/` directory
 3. Activate the plugin through the 'Plugins' menu in WordPress
-4. In your post, insert tags, [openbook][/openbook].
+4. In your post, insert tags, [openbook][/openbook]
 5. In between the tags, place an ISBN number, either 10-digit or 13-digit, like so: [openbook]0836917952[/openbook]. You can look up the ISBN by searching for the book at Open Library, or using other sources. 
-6. Type your content as usual after the tags.
+6. Type your content as usual after the tags
 
 When the post is displayed, it will include a book cover image, title, author(s), and publisher(s) in the upper left corner. The cover image and title will link to the full entry on Open Library. 
 
