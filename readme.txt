@@ -15,7 +15,7 @@ Open Library (http://openlibrary.org) is the only source of bibliographic data t
 
 Important: To use OpenBook, your server must use PHP 5 or higher. Upgrading to PHP 5 may be a simple matter on the control panel of your server (e.g., Netfirms, http://support.netfirms.com/article.php?id=713). Otherwise, look for a future version of OpenBook.
 
-Latest Update: Version 1.4 beta. Works with PHP 5+ (not just 5.2).
+Latest Update: Version 1.5 beta. New "Find in a Library" function
 
 Please don't hesitate to contact me with any error reports or questions. Contact me at http://johnmiedema.ca or openbook@johnmiedema.ca.
 
@@ -74,10 +74,13 @@ Open Library Timeout. The default timeout for connecting to Open Library and com
 
 [openbook]0836917952,,,,,,30[/openbook]
 
+Hide Library. If you do not want a link to WorldCat, set this eighth argument to true:
+
+[openbook]0836917952,,,,,,,true[/openbook]
+
 == Future Release Plans ==
 
 * Allow multiple tags in one page or post. The current version only picks up the first set of tags. A future version will allow any number of tags.
 
-* Insert data in the location of the tags. The current version places the data in the upper left corner. A future version will place the data wherever the tags are located.
-
+* PHP4 compatibility.
 

@@ -3,11 +3,14 @@
 Plugin Name: OpenBook Book Data
 Plugin URI: http://johnmiedema.ca/openbook-wordpress-plugin/
 Description: Displays the book cover image, title, author, and publisher from http://openlibrary.org
-Version: 1.4 beta
+Version: 1.5 beta
 Author: John Miedema
 Author URI: http://johnmiedema.ca
 =========================================================================
 HISTORY
+
+Version 1.5 beta
+- new "Find in a Library" function
 
 Version 1.4 beta
 - if json_decode is missing (< PHP5.2) uses local json library from http://mike.teczno.com/JSON/JSON.phps
@@ -57,6 +60,7 @@ function openbook_insertbookdata($content) {
 	$publisherlink = "";
 	$anchorattributes = "";
 	$curltimeout = 10;
+	$hidelibrary = false;
 
 	try {
 		//check if the openbook tags occur in the post, if not, do nothing
@@ -83,6 +87,7 @@ function openbook_insertbookdata($content) {
 			if ($argcount>=5) $publisherlink=$args[4];
 			if ($argcount>=6) $anchorattributes=$args[5];
 			if ($argcount>=7) $curltimeout=$args[6];
+			if ($argcount>=8) $hidelibrary=$args[7];
 
 			$tagstringlength = ($closetagstart + 11) - $opentagstart;
 			$tagstring = substr($content, $opentagstart, $tagstringlength);
@@ -205,8 +210,14 @@ function openbook_insertbookdata($content) {
 				if ($fullcover == false || $fullcover == "false") $html_size = "width:150px;height:225px;width: expression(this.width > 150 ? 150: true); height: expression(this.height > 225 ? 225: true);";
 
 				$html_coverimage = "<img src='" . $coverimage . "' alt='' border=0 style='float:left;padding-right:15px;padding-bottom:10px;" . $html_size . "' onerror=this.style.padding='0px'; />";
-
 				$html_coverimage = "<a href='" . $bookpage . "' " . $anchorattributes . " >" . $html_coverimage . "</a>";
+
+				//borrow -- only show for valid ISBN
+				$html_borrow = "";
+				if ((ereg ("([0-9]{10})", $isbn, $regs) || ereg ("([0-9]{13})", $isbn, $regs))&&($hidelibrary == false || $hidelibrary == "false"))
+				{
+					$html_borrow = $html_borrow . "<a href='http://worldcat.org/isbn/" . $isbn . "' " . $anchorattributes . " title='Find this title in a local library using WorldCat'>Find in a library</a>";
+				}
 
 				//title
 				$html_title = "<a href='" . $bookpage . "' " . $anchorattributes . " ><i>" . $title . "</i></a>";
@@ -226,6 +237,7 @@ function openbook_insertbookdata($content) {
 				$html_bookdata = "<div id=divOpenBook isbn='" . $isbn . "'>";
 				if ($displayoptions != 2) $html_bookdata = $html_bookdata . $html_coverimage;
 				if ($displayoptions != 1) $html_bookdata = $html_bookdata . $html_text . "<br />";
+				$html_bookdata = $html_bookdata . "<div>" . $html_borrow . "</div>";
 				$html_bookdata = $html_bookdata . "</div>";
 			}
 
