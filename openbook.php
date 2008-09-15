@@ -3,11 +3,18 @@
 Plugin Name: OpenBook Book Data
 Plugin URI: http://johnmiedema.ca/openbook-wordpress-plugin/
 Description: Displays the book cover image, title, author, and publisher from http://openlibrary.org
-Version: 1.5 beta
+Version: 1.6 beta
 Author: John Miedema
 Author URI: http://johnmiedema.ca
 =========================================================================
 HISTORY
+
+Version 1.6 beta
+- can place multiple covers in the same post or page
+- compatible with WordPress shortcodes
+- uses new OpenLibrary cover api
+- uses thumbnails only to ensure copyright compliance
+- displays nicely when imported, e.g., Facebook, Bloglines
 
 Version 1.5 beta
 - new "Find in a Library" function
@@ -51,217 +58,193 @@ if(!function_exists('json_decode'))
 }
 
 //main function finds and replaces open book tags with data from Open Library
-function openbook_insertbookdata($content) {
+function openbook_insertbookdata($atts, $content = null) {
 
 	$booknumber = "";
 	$bookversion = "";
 	$displayoptions = ""; //""=default, 1=cover only, 2=text only
-	$fullcover = false;
 	$publisherlink = "";
 	$anchorattributes = "";
 	$curltimeout = 10;
 	$hidelibrary = false;
 
 	try {
-		//check if the openbook tags occur in the post, if not, do nothing
 
-		$opentagstart = stripos($content,"[openbook]");
-		$closetagstart = stripos($content,"[/openbook]");
+		//===================================================
+		//1. Extract the arguments
+		//the new shortcode format takes parameters from inside the openbook tag, extracted using shortcode_atts
+		//for legacy support, this function also checks for params in the 'content', the string between tags
+		//if param exists in both, legacy value is used
 
-		if ($opentagstart != "" && $closetagstart != "") {
+		extract( shortcode_atts( array(
+		  'booknumber' => '',
+		  'bookversion' => '',
+		  'displayoptions' => '',
+		  'publisherlink' => '',
+		  'anchorattributes' => '',
+		  'curltimeout' => 10,
+		  'hidelibrary' => false
+		  ), $atts ) );
 
-			//===================================================
-			//1. Extract the arguments
+		if ($content != null) {
 
-			$opentagend = $opentagstart + 9;
-			$args_start = $opentagend + 1;
-			$args_length = ($closetagstart - $args_start);
-			$args = explode(",", substr($content, $args_start, $args_length));
+			$args = explode(",", $content);
 
 			$argcount = count($args);
 
 			$booknumber=$args[0];
 			if ($argcount>=2) $bookversion=$args[1];
 			if ($argcount>=3) $displayoptions=$args[2];
-			if ($argcount>=4) $fullcover=$args[3];
+			//fullcover arg removed for copyright
 			if ($argcount>=5) $publisherlink=$args[4];
 			if ($argcount>=6) $anchorattributes=$args[5];
 			if ($argcount>=7) $curltimeout=$args[6];
 			if ($argcount>=8) $hidelibrary=$args[7];
 
-			$tagstringlength = ($closetagstart + 11) - $opentagstart;
-			$tagstring = substr($content, $opentagstart, $tagstringlength);
+		}
 
-			//===================================================
-			//2. Map to one OpenLibrary book key
-			//if the book number is a standard Open Library book key, use it
-			//else assume it is an ISBN and lookup the book key
+		//===================================================
+		//2. Map to one OpenLibrary book key
+		//if the book number is a standard Open Library book key, use it
+		//else assume it is an ISBN and lookup the book key
 
-			$obn_start = stripos($booknumber,"/b/OL");
-			if (is_integer($obn_start)) {
-				$bookkey = $booknumber;
-				$bookversioncount = 1;
+		$obn_start = stripos($booknumber,"/b/OL");
+		if (is_integer($obn_start)) {
+			$bookkey = $booknumber;
+			$bookversioncount = 1;
+		}
+		else {
+			$isbn = $booknumber;
+
+			//clean ISBN
+			//dash - 13-digit ISBNs often have one, but not used by OpenLibrary
+			//spaces
+			$isbn = str_replace("-", "", $isbn);
+			$isbn = str_replace(" ", "", $isbn);
+
+			//query OpenLibrary for internal IDs that match the ISBN
+			//use %22 for quotes, %20 for spaces
+			$url_bookkeys = "http://openlibrary.org/api/search?q={%22query%22:%22(isbn_10:(".$isbn.")%20OR%20isbn_13:(".$isbn."))%22}&text=true";
+			$bookkeys = getUrlContents($url_bookkeys, $curltimeout);
+			$obj = json_decode($bookkeys);
+			$bookkeyresult = $obj->{'result'};
+
+			//there can be multiple unique keys for different versions
+			//if the user has not provided a version, use the first one (assumed order of recency)
+			$bookversioncount = count($bookkeyresult);
+			if ($bookversion == "") $bookversion = 1;
+			elseif ($bookversion > $bookversioncount) $bookversion = $bookversioncount; //set to max version
+			$bookversion = $bookversion - 1; //to match zero-based array
+
+			$bookkey = $bookkeyresult[$bookversion];
+		}
+
+		$bookpage = "http://openlibrary.org" . $bookkey;
+
+		//===================================================
+		//3. Get the book data
+
+		$url = "http://openlibrary.org/api/get?key=".$bookkey."&text=true";
+		$bookdata = getUrlContents($url, $curltimeout);
+
+		$obj = json_decode($bookdata);
+		$bookdataresult = $obj->{'result'};
+
+		//title
+		$title = $bookdataresult ->{'title'};
+		$subtitle = $bookdataresult ->{'subtitle'};
+		if ($subtitle != "") $title=$title.": ".$subtitle; //concatenate title and subtitle
+		$title=ucwords($title);
+
+		//authors -- handle multiple
+		$authors = $bookdataresult ->{'authors'};
+		if (is_array($authors)) {
+		  for($i=0;$i<count($authors);$i++) {
+				$authorkey = $authors[$i] ->{'key'};
+				$url_author = "http://openlibrary.org/api/get?key=".$authorkey."&text=true";
+				$authordata = getUrlContents($url_author, $curltimeout);
+				$obj = json_decode($authordata);
+				$authorresult = $obj->{'result'};
+				$name = $authorresult ->{'name'};
+				if ($i==0) $authorlist = $name;
+				else $authorlist = $authorlist . ", " . $name;
+		  }
+		}
+		$authors = $authorlist;
+		if ($authors=="") {
+		  $authors = $bookdataresult ->{'by_statement'}; //if no author, use bystatement
+		  if ($authors=="") {
+			 $authors=$bookdataresult ->{'contributions'}; //if no author, use contributions
+			 if (is_array($authors)) $authors=implode(", ", $authors);
+		  }
+		}
+		$authors = ucwords($authors);
+
+		//publishers
+		$publishers = $bookdataresult ->{'publishers'};
+		if (is_array($publishers)) {
+		  for($i=0;$i<count($publishers);$i++) {
+			 $publisher = $publishers[$i];
+			 if ($i==0) $publisherlist = $publisher;
+				else $publisherlist = $publisherlist . ", " . $publisher;
+		  }
+		}
+		$publishers = ucwords($publisherlist);
+
+		//coverimage: -M gives thumbnail (used here to ensure fair use), can use -L for large,
+		$olnumber_begin = stripos($bookkey,"/b/") + 3;
+		$olnumber = substr($bookkey, $olnumber_begin);
+		$coverimage = "http://covers.openlibrary.org/b/olid/" . $olnumber . "-M.jpg";
+
+		//===================================================
+		//4. Build the HTML
+		//return blank if this isbn does not exist
+
+		$html_bookdata = "";
+		if($bookversioncount>0)
+		{
+			$html_coverimage = "<img src='" . $coverimage . "' alt='' border=0 style='float:left;padding-right:15px;padding-bottom:10px;' onerror=this.style.padding='0px'; />";
+			$html_coverimage = "<a href='" . $bookpage . "' " . $anchorattributes . " >" . $html_coverimage . "</a>";
+
+			//borrow -- only show for valid ISBN
+			$html_borrow = "";
+			if ((ereg ("([0-9]{10})", $isbn, $regs) || ereg ("([0-9]{13})", $isbn, $regs))&&($hidelibrary == false || $hidelibrary == "false"))
+			{
+				$html_borrow = $html_borrow . "<a href='http://worldcat.org/isbn/" . $isbn . "' " . $anchorattributes . " title='Find this title in a local library using WorldCat'>Find in a library</a>";
 			}
-			else {
-				$isbn = $booknumber;
-
-				//clean ISBN
-				//dash - 13-digit ISBNs often have one, but not used by OpenLibrary
-				//spaces
-				$isbn = str_replace("-", "", $isbn);
-				$isbn = str_replace(" ", "", $isbn);
-
-				//query OpenLibrary for internal IDs that match the ISBN
-				//use %22 for quotes, %20 for spaces
-				$url_bookkeys = "http://openlibrary.org/api/search?q={%22query%22:%22(isbn_10:(".$isbn.")%20OR%20isbn_13:(".$isbn."))%22}&text=true";
-				$bookkeys = getUrlContents($url_bookkeys, $curltimeout);
-				$obj = json_decode($bookkeys);
-				$bookkeyresult = $obj->{'result'};
-
-				//there can be multiple unique keys for different versions
-				//if the user has not provided a version, use the first one (assumed order of recency)
-				$bookversioncount = count($bookkeyresult);
-				if ($bookversion == "") $bookversion = 1;
-				elseif ($bookversion > $bookversioncount) $bookversion = $bookversioncount; //set to max version
-				$bookversion = $bookversion - 1; //to match zero-based array
-
-				$bookkey = $bookkeyresult[$bookversion];
-			}
-
-			$bookpage = "http://openlibrary.org" . $bookkey;
-
-			//===================================================
-			//3. Get the book data
-
-			$url = "http://openlibrary.org/api/get?key=".$bookkey."&text=true";
-			$bookdata = getUrlContents($url, $curltimeout);
-
-			$obj = json_decode($bookdata);
-			$bookdataresult = $obj->{'result'};
 
 			//title
-			$title = $bookdataresult ->{'title'};
-			$subtitle = $bookdataresult ->{'subtitle'};
-			if ($subtitle != "") $title=$title.": ".$subtitle; //concatenate title and subtitle
-			$title=ucwords($title);
+			$html_title = "<a href='" . $bookpage . "' " . $anchorattributes . " ><i>" . $title . "</i></a>";
 
-			//authors -- handle multiple
-			$authors = $bookdataresult ->{'authors'};
-			if (is_array($authors)) {
-			  for($i=0;$i<count($authors);$i++) {
-					$authorkey = $authors[$i] ->{'key'};
-					$url_author = "http://openlibrary.org/api/get?key=".$authorkey."&text=true";
-					$authordata = getUrlContents($url_author, $curltimeout);
-					$obj = json_decode($authordata);
-					$authorresult = $obj->{'result'};
-					$name = $authorresult ->{'name'};
-					if ($i==0) $authorlist = $name;
-					else $authorlist = $authorlist . ", " . $name;
-			  }
-			}
-			$authors = $authorlist;
-			if ($authors=="") {
-			  $authors = $bookdataresult ->{'by_statement'}; //if no author, use bystatement
-			  if ($authors=="") {
-				 $authors=$bookdataresult ->{'contributions'}; //if no author, use contributions
-				 if (is_array($authors)) $authors=implode(", ", $authors);
-			  }
-			}
-			$authors = ucwords($authors);
+			//author
+			$html_authors = $authors;
 
 			//publishers
-			$publishers = $bookdataresult ->{'publishers'};
-			if (is_array($publishers)) {
-			  for($i=0;$i<count($publishers);$i++) {
-				 $publisher = $publishers[$i];
-				 if ($i==0) $publisherlist = $publisher;
-					else $publisherlist = $publisherlist . ", " . $publisher;
-			  }
-			}
-			$publishers = ucwords($publisherlist);
+			$html_publishers = $publishers;
+			if ($publisherlink != "") $html_publishers = "<a href='" . $publisherlink . "' target='_blank'>" . $publishers . "</a>";
 
-			//coverimage
+			//assemble text
+			$html_text = "<b>" . $html_title . ", " . $html_authors . "</b>; " . $html_publishers;
 
-			//there seems to be a standard URL format for most cover images
-			//Open Library converts gif to jpg
-			$isbn10=$bookdataresult ->{'isbn_10'};
-			if ($isbn10 != "") {
-			  $isbn10 = $isbn10[0];
-			  $coverimage = "http://openlibrary.org/static/bookcovers/full/" . substr($isbn10, 0, 1) . "/" . substr($isbn10, 1, 1) . "/" . $isbn10 . ".jpg";
-			}
-
-			//a coverimage is returned sometimes, if it exists use it
-			$coveralternate= $bookdataresult ->{'coverimage'};
-			if ($coveralternate != "") {
-			  $coveralternate = str_replace("\\", "", $coveralternate);
-			  $coveralternate = "http://openlibrary.org" . $coveralternate;
-			  $coverimage=$coveralternate;
-			}
-
-			//===================================================
-			//4. Build the HTML
-			//return blank if this isbn does not exist
-
-			$html_bookdata = "";
-			if($bookversioncount>0)
-			{
-				//coverimage
-				$html_size = "";
-				if ($fullcover == false || $fullcover == "false") $html_size = "width:150px;height:225px;width: expression(this.width > 150 ? 150: true); height: expression(this.height > 225 ? 225: true);";
-
-				$html_coverimage = "<img src='" . $coverimage . "' alt='' border=0 style='float:left;padding-right:15px;padding-bottom:10px;" . $html_size . "' onerror=this.style.padding='0px'; />";
-				$html_coverimage = "<a href='" . $bookpage . "' " . $anchorattributes . " >" . $html_coverimage . "</a>";
-
-				//borrow -- only show for valid ISBN
-				$html_borrow = "";
-				if ((ereg ("([0-9]{10})", $isbn, $regs) || ereg ("([0-9]{13})", $isbn, $regs))&&($hidelibrary == false || $hidelibrary == "false"))
-				{
-					$html_borrow = $html_borrow . "<a href='http://worldcat.org/isbn/" . $isbn . "' " . $anchorattributes . " title='Find this title in a local library using WorldCat'>Find in a library</a>";
-				}
-
-				//title
-				$html_title = "<a href='" . $bookpage . "' " . $anchorattributes . " ><i>" . $title . "</i></a>";
-
-				//author
-				$html_authors = $authors;
-
-				//publishers
-				$html_publishers = $publishers;
-				if ($publisherlink != "") $html_publishers = "<a href='" . $publisherlink . "' target='_blank'>" . $publishers . "</a>";
-
-				//assemble text
-				$html_text = "<b>" . $html_title . ", " . $html_authors . "</b>; " . $html_publishers;
-
-				//assemble
-				//the div id and isbn allows for styling and dhtml handling
-				$html_bookdata = "<div id=divOpenBook isbn='" . $isbn . "'>";
-				if ($displayoptions != 2) $html_bookdata = $html_bookdata . $html_coverimage;
-				if ($displayoptions != 1) $html_bookdata = $html_bookdata . $html_text . "<br />";
-				$html_bookdata = $html_bookdata . "<div>" . $html_borrow . "</div>";
-				$html_bookdata = $html_bookdata . "</div>";
-			}
-
-			//===================================================
-			//5. strip out openbook tags
-
-			$content = str_replace($tagstring, "", $content);
+			//assemble
+			//the div id and isbn allows for styling and dhtml handling
+			$html_bookdata = "<div id=divOpenBook>";
+			if ($displayoptions != 2) $html_bookdata = $html_bookdata . $html_coverimage;
+			if ($displayoptions != 1) $html_bookdata = $html_bookdata . $html_text . "<br />";
+			$html_bookdata = $html_bookdata . "<div>" . $html_borrow . "</div>";
+			$html_bookdata = $html_bookdata . "<br></div>";
 		}
 	}
 	catch(Exception $e)
 	{
 		$message = "<i>[" . $e->getMessage() . "]</i> ";
-
-		//place message in openbook tags
-		$content = str_replace($tagstring, $message, $content);
+		return $message;
 	}
 
 	//===================================================
-	//6. replace content
+	//6. return book data
 
-	//insert book data at the beginning of the content
-	$content = $html_bookdata . $content;
-
-	echo $content;
+	return $html_bookdata;
 }
 
 //this method replaces file_get_contents, which is sometimes disallowed on servers
@@ -287,6 +270,6 @@ function getUrlContents($url, $curltimeout) {
 	return $output;
 }
 
-add_filter('the_content', 'openbook_insertbookdata');
+add_shortcode('openbook', 'openbook_insertbookdata');
 
 ?>
