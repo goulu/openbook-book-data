@@ -3,47 +3,17 @@
 Plugin Name: OpenBook Book Data
 Plugin URI: http://johnmiedema.ca/openbook-wordpress-plugin/
 Description: Displays the book cover image, title, author, and publisher from http://openlibrary.org
-Version: 1.6 beta
+Version: 1.7
 Author: John Miedema
 Author URI: http://johnmiedema.ca
 =========================================================================
-HISTORY
-
-Version 1.6 beta
-- can place multiple covers in the same post or page
-- compatible with WordPress shortcodes
-- uses new OpenLibrary cover api
-- uses thumbnails only to ensure copyright compliance
-- displays nicely when imported, e.g., Facebook, Bloglines
-
-Version 1.5 beta
-- new "Find in a Library" function
-
-Version 1.4 beta
-- if json_decode is missing (< PHP5.2) uses local json library from http://mike.teczno.com/JSON/JSON.phps
-- many thanks to Tom Keays http://www.tomkeays.com
-- note PHP5 is still required for the try/catch exception handling
-
-Version 1.3.1 beta
-- handles image sizing for IE6/IE5 too
-- inline style removes border from image
-
-Version 1.3 beta
-- Added configurable timeout for curl calls b/c Open Library is down at times, default=5 sec
-
-Version 1.2 beta
-- Can use the OL number from the Open Library URL instead of ISBN
-	- compensates for Open Library delay in adding new titles to their search index
-	- can display titles that do not have an ISBN
-- Reduced bottom padding to 10px
-
-Version 1.1.1 beta
-- Tests for JSON library when plugin is activated
-
-Version 1.1 beta
-- Replaced file_get_contents with curl because disallowed on some servers
-- Replaced forced anchor target=_blank with optional argument, anchorattributes, to let user specify any anchor attributes
-
+New Features
+- inserts COinS for machine reading, e.g., Zotero
+- displays first sentence, description, notes from OpenLibrary when user hovers over book cover image
+- new option to use small covers (smallcover=true, shortcode format only)
+- does not use default image of OpenLibrary
+- new admin panel displays options
+- handling to prevent ", ;" display when OpenLibrary API returns blanks for title/author/publisher
 =========================================================================
 */
 
@@ -60,6 +30,8 @@ if(!function_exists('json_decode'))
 //main function finds and replaces open book tags with data from Open Library
 function openbook_insertbookdata($atts, $content = null) {
 
+	$openbookversion = "1.7 beta";
+
 	$booknumber = "";
 	$bookversion = "";
 	$displayoptions = ""; //""=default, 1=cover only, 2=text only
@@ -67,6 +39,7 @@ function openbook_insertbookdata($atts, $content = null) {
 	$anchorattributes = "";
 	$curltimeout = 10;
 	$hidelibrary = false;
+	$smallcover = false;
 
 	try {
 
@@ -75,6 +48,7 @@ function openbook_insertbookdata($atts, $content = null) {
 		//the new shortcode format takes parameters from inside the openbook tag, extracted using shortcode_atts
 		//for legacy support, this function also checks for params in the 'content', the string between tags
 		//if param exists in both, legacy value is used
+		//no new options are being added to the legacy method
 
 		extract( shortcode_atts( array(
 		  'booknumber' => '',
@@ -83,11 +57,11 @@ function openbook_insertbookdata($atts, $content = null) {
 		  'publisherlink' => '',
 		  'anchorattributes' => '',
 		  'curltimeout' => 10,
-		  'hidelibrary' => false
+		  'hidelibrary' => false,
+		  'smallcover' => false
 		  ), $atts ) );
 
 		if ($content != null) {
-
 			$args = explode(",", $content);
 
 			$argcount = count($args);
@@ -100,7 +74,6 @@ function openbook_insertbookdata($atts, $content = null) {
 			if ($argcount>=6) $anchorattributes=$args[5];
 			if ($argcount>=7) $curltimeout=$args[6];
 			if ($argcount>=8) $hidelibrary=$args[7];
-
 		}
 
 		//===================================================
@@ -151,8 +124,10 @@ function openbook_insertbookdata($atts, $content = null) {
 		$bookdataresult = $obj->{'result'};
 
 		//title
+		$titleprefix = $bookdataresult ->{'title_prefix'};
 		$title = $bookdataresult ->{'title'};
 		$subtitle = $bookdataresult ->{'subtitle'};
+		if ($titleprefix != "") $title=$titleprefix . " " . $title;
 		if ($subtitle != "") $title=$title.": ".$subtitle; //concatenate title and subtitle
 		$title=ucwords($title);
 
@@ -170,7 +145,7 @@ function openbook_insertbookdata($atts, $content = null) {
 				else $authorlist = $authorlist . ", " . $name;
 		  }
 		}
-		$authors = $authorlist;
+		$authors = $authorlist; //authorlist gets used by COinS function
 		if ($authors=="") {
 		  $authors = $bookdataresult ->{'by_statement'}; //if no author, use bystatement
 		  if ($authors=="") {
@@ -180,21 +155,52 @@ function openbook_insertbookdata($atts, $content = null) {
 		}
 		$authors = ucwords($authors);
 
-		//publishers
+		//publisher - if multiple, use the first one
 		$publishers = $bookdataresult ->{'publishers'};
 		if (is_array($publishers)) {
-		  for($i=0;$i<count($publishers);$i++) {
-			 $publisher = $publishers[$i];
-			 if ($i==0) $publisherlist = $publisher;
-				else $publisherlist = $publisherlist . ", " . $publisher;
-		  }
+			if (count($publishers)>0) $publisher = $publishers[0];
+			else $publisher = "";
 		}
-		$publishers = ucwords($publisherlist);
+		$publisher = ucwords($publisher);
 
-		//coverimage: -M gives thumbnail (used here to ensure fair use), can use -L for large,
+		//publish place - if multiple, use the first one
+		$publishplaces = $bookdataresult ->{'publish_places'};
+		if (is_array($publishplaces)) {
+			if (count($publishplaces)>0) $publishplace = $publishplaces[0];
+			else $publishplace = "";
+		}
+		$publishplace = ucwords($publishplace);
+
+		//publish date
+		$publishdate = $bookdataresult ->{'publish_date'};
+
+		//coverimage:
+		//-M gives thumbnail, default
+		//-S gives even smaller cover
+		//-L gives large cover, not used here to ensure fair use
+		//default=false: disable using the default image when no image is found
+
+		$coversize = "-S";
+		if ($smallcover == false || $smallcover == "false") $coversize = "-M";
+
 		$olnumber_begin = stripos($bookkey,"/b/") + 3;
 		$olnumber = substr($bookkey, $olnumber_begin);
-		$coverimage = "http://covers.openlibrary.org/b/olid/" . $olnumber . "-M.jpg";
+		$coverimage = "http://covers.openlibrary.org/b/olid/" . $olnumber . $coversize . ".jpg?default=false";
+
+		//descriptive data
+		//handle special characters so they do not break the HTMLL
+
+		$description = $bookdataresult ->{'description'};
+		$descriptiontext = $description ->{'value'};
+		$descriptiontext = str_replace("'", "&#39;", $descriptiontext); //single quote
+
+		$firstsentence = $bookdataresult ->{'first_sentence'};
+		$firstsentencetext = $firstsentence ->{'value'};
+		$firstsentencetext = str_replace("'", "&#39;", $firstsentencetext);
+
+		$notes = $bookdataresult ->{'notes'};
+		$notestext = $notes ->{'value'};
+		$notestext = str_replace("'", "&#39;", $notestext);
 
 		//===================================================
 		//4. Build the HTML
@@ -203,12 +209,26 @@ function openbook_insertbookdata($atts, $content = null) {
 		$html_bookdata = "";
 		if($bookversioncount>0)
 		{
-			$html_coverimage = "<img src='" . $coverimage . "' alt='' border=0 style='float:left;padding-right:15px;padding-bottom:10px;' onerror=this.style.padding='0px'; />";
+			//'tooltip' text that shows when user hovers over cover image
+			$hovertext = "";
+			if ($firstsentencetext != "") $hovertext = "First Sentence: " . $firstsentencetext;
+			if ($descriptiontext != "")
+			{
+				if ($hovertext != "") $hovertext = $hovertext . " ";
+				$hovertext = $hovertext . "Description: " . $descriptiontext;
+			}
+			if ($notestext != "")
+			{
+				if ($hovertext != "") $hovertext = $hovertext . " ";
+				$hovertext = $hovertext . "Notes: " . $notestext;
+			}
+
+			$html_coverimage = "<img src='" . $coverimage . "' alt='' title='" . $hovertext . "' border=0 style='float:left;padding-right:15px;padding-bottom:10px;' onerror=this.style.padding='0px'; />";
 			$html_coverimage = "<a href='" . $bookpage . "' " . $anchorattributes . " >" . $html_coverimage . "</a>";
 
 			//borrow -- only show for valid ISBN
 			$html_borrow = "";
-			if ((ereg ("([0-9]{10})", $isbn, $regs) || ereg ("([0-9]{13})", $isbn, $regs))&&($hidelibrary == false || $hidelibrary == "false"))
+			if (validISBN($isbn)&&($hidelibrary == false || $hidelibrary == "false"))
 			{
 				$html_borrow = $html_borrow . "<a href='http://worldcat.org/isbn/" . $isbn . "' " . $anchorattributes . " title='Find this title in a local library using WorldCat'>Find in a library</a>";
 			}
@@ -219,20 +239,39 @@ function openbook_insertbookdata($atts, $content = null) {
 			//author
 			$html_authors = $authors;
 
-			//publishers
-			$html_publishers = $publishers;
-			if ($publisherlink != "") $html_publishers = "<a href='" . $publisherlink . "' target='_blank'>" . $publishers . "</a>";
+			//publisher
+			$html_publisher = $publisher;
+			if ($publisherlink != "") $html_publisher = "<a href='" . $publisherlink . "' target='_blank'>" . $publisher . "</a>";
 
 			//assemble text
-			$html_text = "<b>" . $html_title . ", " . $html_authors . "</b>; " . $html_publishers;
-
+			//sometimes an API call returns a blank for a value, conditional logic prevents display of punctuation by itself
+			$html_text = "";
+			if ($title != "")
+			{
+				$html_text = $html_text . "<b>" . $html_title . "</b>";
+			}
+			if ($authors != "")
+			{
+				if ($html_text != "") $html_text = $html_text . "<b>, " . $html_authors . "</b>";
+				else $html_text = "<b>" . $html_authors . "</b>";	 
+			}
+			if ($publisher != "")
+			{
+				if ($html_text != "") $html_text = $html_text . "; " . $html_publisher;
+				else $html_text = $html_publisher;
+			}
+			if ($html_text == "") $html_text = "<i>Text temporarily unavailable</i>";
+			
 			//assemble
-			//the div id and isbn allows for styling and dhtml handling
-			$html_bookdata = "<div id=divOpenBook>";
+			$html_bookdata = "<div id=divOpenBook version='" . $openbookversion . "'>";
 			if ($displayoptions != 2) $html_bookdata = $html_bookdata . $html_coverimage;
 			if ($displayoptions != 1) $html_bookdata = $html_bookdata . $html_text . "<br />";
 			$html_bookdata = $html_bookdata . "<div>" . $html_borrow . "</div>";
-			$html_bookdata = $html_bookdata . "<br></div>";
+			if ($smallcover == false || $smallcover == "false") $html_bookdata = $html_bookdata . "<br />";
+			$html_bookdata = $html_bookdata . "</div>";
+
+			//add coins HTML
+			$html_bookdata = $html_bookdata . buildCOinS($title, $isbn, $authorlist, $publisher, $publishplace, $publishdate);
 		}
 	}
 	catch(Exception $e)
@@ -270,6 +309,75 @@ function getUrlContents($url, $curltimeout) {
 	return $output;
 }
 
+//utility for testing if 10 or 13 digits ISBN
+function validISBN($testisbn)
+{
+	return (ereg ("([0-9]{10})", $testisbn, $regs) || ereg ("([0-9]{13})", $testisbn, $regs));
+}
+
+//build the HTML for coins, as per http://ocoins.info/
+function buildCOinS($title, $isbn, $authorlist, $publisher, $publishplace, $publishdate) {
+
+	try
+	{
+		//title, includes subtitle	
+		$title = urlencode($title);
+		$publisher = urlencode($publisher);
+		$publishplace = urlencode($publishplace);
+		$publishdate = urlencode($publishdate);
+
+		//authors
+		$authors_coins = "";
+		
+		$authors = explode(",", $authorlist);
+		$authorcount = count($authors);
+		for($i=0;$i<$authorcount;$i++) {
+			$author = $authors[$i]; //Open Library shows "William Shakespeare";
+			$author = urlencode($author);			
+			$author_coins = '&amp;rft.au=' . $author;
+			$authors_coins .= $author_coins;
+		}
+
+		//assemble coins
+		$coins = "";
+
+		//constants
+		$coins .= '<span class="Z3988" ';
+		$coins .= 'title="ctx_ver=Z39.88-2004';
+		$coins .= '&amp;rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Abook'; 
+		$coins .= '&amp;rfr_id=info%3Asid%2Fjohnmiedema.ca%3AOpenBook';
+		$coins .= '&amp;rft.genre=book';
+
+		//conditional attributes
+		if ($title != "") $coins .= '&amp;rft.btitle=' . $title;
+		if ($isbn != "" && validISBN($isbn)) $coins .= "&amp;rft.isbn=" . $isbn;
+		if ($authors_coins != "") $coins .= $authors_coins;
+		if ($publisher != "") $coins .= "&amp;rft.pub=" . $publisher;
+		if ($publishplace != "") $coins .= "&amp;rft.place=" . $publishplace;
+		if ($publishdate != "") $coins .= "&amp;rft.date=" . $publishdate;
+
+		//required end
+		$coins .= '"></span>';
+
+		return $coins;
+	}
+	catch(Exception $e)
+	{
+		return "";
+	}
+}
+
+// action function for admin hooks
+function openbook_add_pages() {
+    add_options_page('OpenBook', 'OpenBook', 8, 'openbook_admin.php', 'openbook_admin_page'); // Add a new submenu under Options:
+}
+
+// displays the page content for the Admin submenu
+function openbook_admin_page() {
+	require_once('openbook_admin.php');
+}
+
 add_shortcode('openbook', 'openbook_insertbookdata');
+add_action('admin_menu', 'openbook_add_pages');
 
 ?>

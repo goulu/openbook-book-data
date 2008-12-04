@@ -1,8 +1,8 @@
 === OpenBook Book Data ===
 Contributors: johnmiedema
-Tags: book, books, reading, book reviews, library, libraries, book covers
+Tags: book, books, reading, book reviews, library, libraries, book covers, COinS
 Requires at least: 2.5.1
-Tested up to: 2.6
+Tested up to: 2.6.5
 Stable tag: trunk
 
 OpenBook displays a book cover image, title, author, and publisher inside posts or pages using data from Open Library 
@@ -43,6 +43,10 @@ If an image is missing, OpenBook will show a blank for the image. If the author 
 
 Version 1.3 beta of OpenBook detects when Open Library is down and inserts a message where the data would go: "Open Library Data Unavailable". When Open Library becomes available, the book data will be displayed normally.
 
+* Are there any display or other options?
+
+There are many options. After installing OpenBook, see the OpenBook administration panel in WordPress to get more information.
+
 * Earlier versions of OpenBook used tags like this: [openbook]0864921535[/openbook]. Does this still work?
 
 The old tags still work, but version 1.6 of OpenBook switch to the WordPress shortcode format because it is easier and compatible with other WordPress shortcodes. See the Options sections for more information. You can use either format, or even mix them if you want. It is recommended that you use the shortcode format, e.g., [openbook booknumber="0864921535"].
@@ -51,46 +55,23 @@ The old tags still work, but version 1.6 of OpenBook switch to the WordPress sho
 
 Courts have repeatedly found that thumbnail or reduced versions of artwork fall under fair use provisions of copyright law. Even if that were not so, most publishers are eager to have people use covers to help promote the sale of their books. OpenBook only displays thumbnail versions of book covers.
 
-== Options ==
+* How do I use the COinS feature?
 
-OpenBook has extra options you can control by adding attributes to the [openbook] tag.
-
-Book Version. Sometimes there are multiple versions of a book in Open Library for a single ISBN. By default, OpenBook uses the most recent version. If you prefer an earlier version specify it like so: 
-
-[openbook booknumber="0864921535" bookversion="2"]
-
-Display Options. OpenBook displays both the cover image and text data by default. The following options are also available: 1=cover only. 2=Text only.
-
-[openbook booknumber="0864921535" displayoptions="1"]
-
-To display multiple options, such as bookversion and displayoptions:
-
-[openbook booknumber="0864921535" bookversion="2" displayoptions="1"]
-
-Publisher Link. If you supply a publisher link, the publisher name will link to that site:
-
-[openbook booknumber="0864921535" publisherlink="http://www.gooselane.com/"]
-
-Anchor Attributes. If you want your links to open in a new window, you can specify "target=_blank" like so:
-
-[openbook booknumber="0864921535" anchorattributes="target=_blank"]
-
-Open Library Timeout. The default timeout for connecting to Open Library and completing the call is ten seconds. You can change this timeout to another value:
-
-[openbook booknumber="0864921535" curltimeout="30"]
-
-Hide Library. If you do not want a link to WorldCat:
-
-[openbook booknumber="0864921535" hidelibrary="true"]
-
-Note too that you can place as many OpenBook tags as you like in a post or page.
+OpenBook inserts COinS data in the HTML that other applications can read the bibliographic data. It is useful for applications like Zotero, an open source reference manager.
 
 == Future Release Plans ==
 
-* I'm debating if I should remove all default styling to let the user decide. Your opinion?
+* Administrative panel will allow user to set options.
+
+* Link to full-text on-line when available from Open Library.
+
+* Link to LibraryThing for social data.
 
 * New option to link to an author's and/or artist/illustrator's website.
 
-* Rolling the cursor over the book cover will show description, first sentence, notes if available in Open Library.
+* I'm not quite happy with the styling defaults yet, e.g., float. Still thinking about this.
 
-* Minor: Add title prefixes from Open Library.
+* PHP4 compatibility, if there is interest. Let me know.
+
+* Always open to suggestions ...
+
