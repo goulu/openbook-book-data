@@ -15,8 +15,6 @@ OpenBook gets its covers and book data from Open Library (http://openlibrary.org
 
 Important: To use OpenBook, your server must use PHP 5 or higher. Upgrading to PHP 5 may be a simple matter on the control panel of your server (e.g., Netfirms, http://support.netfirms.com/article.php?id=713).
 
-Latest Update: Version 1.6 beta. Can place multiple covers in the same post or page. Compatible with WordPress shortcodes. Uses thumbnails only to ensure copyright compliance. Displays nicely when imported, e.g., Facebook, Bloglines.
-
 See samples and find support at http://johnmiedema.ca/openbook-wordpress-plugin/. Contact me at openbook@johnmiedema.ca.
 
 == Installation ==
