@@ -3,26 +3,22 @@
 Plugin Name: OpenBook Book Data
 Plugin URI: http://johnmiedema.ca/openbook-wordpress-plugin/
 Description: Displays the book cover image, title, author, and publisher from http://openlibrary.org
-Version: 1.7 beta
+Version: 1.7.1 beta
 Author: John Miedema
 Author URI: http://johnmiedema.ca
 =========================================================================
 New Features
-- inserts COinS for machine reading, e.g., Zotero
-- displays first sentence, description, notes from OpenLibrary when user hovers over book cover image
-- new option to use small covers (smallcover=true, shortcode format only)
-- does not use default image of OpenLibrary
-- new admin panel displays options
-- handling to prevent ", ;" display when OpenLibrary API returns blanks for title/author/publisher
+- mostly XHTML compliant
+- local JSON library custom named to prevent rare conflicts
 =========================================================================
 */
 
 //if json_decode is missing (< PHP5.2) use local json library
 if(!function_exists('json_decode'))
 {
-  include_once('JSON.php');
+  include_once('JSON_ob.php');
   function json_decode($data) {
-      $json = new Services_JSON();
+      $json = new Services_JSON_ob();
       return( $json->decode($data) );
   }
 }
@@ -30,7 +26,7 @@ if(!function_exists('json_decode'))
 //main function finds and replaces open book tags with data from Open Library
 function openbook_insertbookdata($atts, $content = null) {
 
-	$openbookversion = "1.7 beta";
+	$openbookversion = "1.7.1 beta";
 
 	$booknumber = "";
 	$bookversion = "";
@@ -214,23 +210,23 @@ function openbook_insertbookdata($atts, $content = null) {
 			if ($firstsentencetext != "") $hovertext = "First Sentence: " . $firstsentencetext;
 			if ($descriptiontext != "")
 			{
-				if ($hovertext != "") $hovertext = $hovertext . " ";
-				$hovertext = $hovertext . "Description: " . $descriptiontext;
+				if ($hovertext != "") $hovertext .= " ";
+				$hovertext .= "Description: " . $descriptiontext;
 			}
 			if ($notestext != "")
 			{
-				if ($hovertext != "") $hovertext = $hovertext . " ";
-				$hovertext = $hovertext . "Notes: " . $notestext;
+				if ($hovertext != "") $hovertext .= " ";
+				$hovertext .= "Notes: " . $notestext;
 			}
 
-			$html_coverimage = "<img src='" . $coverimage . "' alt='' title='" . $hovertext . "' border=0 style='float:left;padding-right:15px;padding-bottom:10px;' onerror=this.style.padding='0px'; />";
+			$html_coverimage = "<img src='" . $coverimage . "' alt='' title='" . $hovertext . "' style='border:0px;float:left;padding-right:15px;padding-bottom:10px;' onerror='this.style.padding=0px;' />";
 			$html_coverimage = "<a href='" . $bookpage . "' " . $anchorattributes . " >" . $html_coverimage . "</a>";
 
 			//borrow -- only show for valid ISBN
 			$html_borrow = "";
 			if (validISBN($isbn)&&($hidelibrary == false || $hidelibrary == "false"))
 			{
-				$html_borrow = $html_borrow . "<a href='http://worldcat.org/isbn/" . $isbn . "' " . $anchorattributes . " title='Find this title in a local library using WorldCat'>Find in a library</a>";
+				$html_borrow .= "<a href='http://worldcat.org/isbn/" . $isbn . "' " . $anchorattributes . " title='Find this title in a local library using WorldCat'>Find in a library</a>";
 			}
 
 			//title
@@ -241,37 +237,40 @@ function openbook_insertbookdata($atts, $content = null) {
 
 			//publisher
 			$html_publisher = $publisher;
-			if ($publisherlink != "") $html_publisher = "<a href='" . $publisherlink . "' target='_blank'>" . $publisher . "</a>";
+			if ($publisherlink != "") $html_publisher = "<a href='" . $publisherlink . "' >" . $publisher . "</a>";
 
 			//assemble text
 			//sometimes an API call returns a blank for a value, conditional logic prevents display of punctuation by itself
 			$html_text = "";
 			if ($title != "")
 			{
-				$html_text = $html_text . "<b>" . $html_title . "</b>";
+				$html_text .= "<b>" . $html_title . "</b>";
 			}
 			if ($authors != "")
 			{
-				if ($html_text != "") $html_text = $html_text . "<b>, " . $html_authors . "</b>";
+				if ($html_text != "") $html_text .= "<b>, " . $html_authors . "</b>";
 				else $html_text = "<b>" . $html_authors . "</b>";	 
 			}
 			if ($publisher != "")
 			{
-				if ($html_text != "") $html_text = $html_text . "; " . $html_publisher;
+				if ($html_text != "") $html_text .= "; " . $html_publisher;
 				else $html_text = $html_publisher;
 			}
 			if ($html_text == "") $html_text = "<i>Text temporarily unavailable</i>";
+
+			//build COinS
+			$html_COinS = buildCOinS($title, $isbn, $authorlist, $publisher, $publishplace, $publishdate);
 			
 			//assemble
-			$html_bookdata = "<div id=divOpenBook version='" . $openbookversion . "'>";
-			if ($displayoptions != 2) $html_bookdata = $html_bookdata . $html_coverimage;
-			if ($displayoptions != 1) $html_bookdata = $html_bookdata . $html_text . "<br />";
-			$html_bookdata = $html_bookdata . "<div>" . $html_borrow . "</div>";
-			if ($smallcover == false || $smallcover == "false") $html_bookdata = $html_bookdata . "<br />";
-			$html_bookdata = $html_bookdata . "</div>";
+			$html_bookdata = "";
 
-			//add coins HTML
-			$html_bookdata = $html_bookdata . buildCOinS($title, $isbn, $authorlist, $publisher, $publishplace, $publishdate);
+			$html_bookdata .= "<div class='divOpenBook' version='" . $openbookversion . "'>";
+			if ($displayoptions != 2) $html_bookdata .= $html_coverimage;
+			if ($displayoptions != 1) $html_bookdata .= $html_text . "<br />";
+			$html_bookdata .= "<div>" . $html_borrow . "</div>";
+			if ($smallcover == false || $smallcover == "false") $html_bookdata .= "<br />";
+			$html_bookdata .= $html_COinS;
+			$html_bookdata .= "</div>";
 		}
 	}
 	catch(Exception $e)
