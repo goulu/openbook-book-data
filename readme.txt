@@ -2,7 +2,7 @@
 Contributors: johnmiedema
 Tags: book, books, reading, book reviews, library, libraries, book covers, COinS
 Requires at least: 2.5.1
-Tested up to: 2.6.5
+Tested up to: 2.7
 Stable tag: trunk
 
 OpenBook displays a book cover image, title, author, and publisher inside posts or pages using data from Open Library 

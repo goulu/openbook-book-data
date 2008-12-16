@@ -3,13 +3,14 @@
 Plugin Name: OpenBook Book Data
 Plugin URI: http://johnmiedema.ca/openbook-wordpress-plugin/
 Description: Displays the book cover image, title, author, and publisher from http://openlibrary.org
-Version: 1.7.1 beta
+Version: 1.7.2 beta
 Author: John Miedema
 Author URI: http://johnmiedema.ca
 =========================================================================
 New Features
-- mostly XHTML compliant
-- local JSON library custom named to prevent rare conflicts
+- author links to author record in Open Library
+- tooltips inform the user where links go, e.g., Open Library, publisher's website
+- corrected error handling for missing images (caused script error)
 =========================================================================
 */
 
@@ -130,26 +131,35 @@ function openbook_insertbookdata($atts, $content = null) {
 		//authors -- handle multiple
 		$authors = $bookdataresult ->{'authors'};
 		if (is_array($authors)) {
-		  for($i=0;$i<count($authors);$i++) {
+			for($i=0;$i<count($authors);$i++) {
 				$authorkey = $authors[$i] ->{'key'};
 				$url_author = "http://openlibrary.org/api/get?key=".$authorkey."&text=true";
 				$authordata = getUrlContents($url_author, $curltimeout);
 				$obj = json_decode($authordata);
 				$authorresult = $obj->{'result'};
 				$name = $authorresult ->{'name'};
-				if ($i==0) $authorlist = $name;
-				else $authorlist = $authorlist . ", " . $name;
-		  }
+				$authorlink = "<a href='http://openlibrary.org" . $authorkey . "' title='Click to view author in Open Library'>" . $name . "</a>"; 
+
+				if ($i==0) {
+					$authorslist_html = $authorlink;
+					$authorlist = $name;
+				}
+				else {
+					$authorslist_html .= ", " . $authorlink;
+					$authorlist = $authorlist . ", " . $name;
+				}
+		  	}
 		}
-		$authors = $authorlist; //authorlist gets used by COinS function
-		if ($authors=="") {
-		  $authors = $bookdataresult ->{'by_statement'}; //if no author, use bystatement
-		  if ($authors=="") {
-			 $authors=$bookdataresult ->{'contributions'}; //if no author, use contributions
-			 if (is_array($authors)) $authors=implode(", ", $authors);
-		  }
+
+		//if no author, use alternate, no author link
+		if ($authorslist_html=="") {
+			$authorsalternate = $bookdataresult ->{'by_statement'}; //if no author, use bystatement
+			if ($authorsalternate=="") {
+				 $authorsalternate=$bookdataresult ->{'contributions'}; //if no by statement, use contributions
+				 if (is_array($authorsalternate)) $authorsalternate=implode(", ", $authorsalternate);
+			}
+			$authorslist_html = ucwords($authorsalternate);		
 		}
-		$authors = ucwords($authors);
 
 		//publisher - if multiple, use the first one
 		$publishers = $bookdataresult ->{'publishers'};
@@ -218,8 +228,9 @@ function openbook_insertbookdata($atts, $content = null) {
 				if ($hovertext != "") $hovertext .= " ";
 				$hovertext .= "Notes: " . $notestext;
 			}
+			if ($hovertext == "") $hovertext = "Click to view title in Open Library";
 
-			$html_coverimage = "<img src='" . $coverimage . "' alt='' title='" . $hovertext . "' style='border:0px;float:left;padding-right:15px;padding-bottom:10px;' onerror='this.style.padding=0px;' />";
+			$html_coverimage = "<img src='" . $coverimage . "' alt='' title='" . $hovertext . "' style='border:0px;float:left;padding-right:15px;padding-bottom:10px;' onerror=this.style.padding='0px'; />";
 			$html_coverimage = "<a href='" . $bookpage . "' " . $anchorattributes . " >" . $html_coverimage . "</a>";
 
 			//borrow -- only show for valid ISBN
@@ -230,14 +241,14 @@ function openbook_insertbookdata($atts, $content = null) {
 			}
 
 			//title
-			$html_title = "<a href='" . $bookpage . "' " . $anchorattributes . " ><i>" . $title . "</i></a>";
+			$html_title = "<a href='" . $bookpage . "' title='Click to view title in Open Library' " . $anchorattributes . " ><i>" . $title . "</i></a>";
 
 			//author
-			$html_authors = $authors;
+			$html_authors = $authorslist_html;
 
 			//publisher
 			$html_publisher = $publisher;
-			if ($publisherlink != "") $html_publisher = "<a href='" . $publisherlink . "' >" . $publisher . "</a>";
+			if ($publisherlink != "") $html_publisher = "<a href='" . $publisherlink . "' title='Click to view the publisher's website' >" . $publisher . "</a>";
 
 			//assemble text
 			//sometimes an API call returns a blank for a value, conditional logic prevents display of punctuation by itself
@@ -246,7 +257,7 @@ function openbook_insertbookdata($atts, $content = null) {
 			{
 				$html_text .= "<b>" . $html_title . "</b>";
 			}
-			if ($authors != "")
+			if ($html_authors != "")
 			{
 				if ($html_text != "") $html_text .= "<b>, " . $html_authors . "</b>";
 				else $html_text = "<b>" . $html_authors . "</b>";	 
