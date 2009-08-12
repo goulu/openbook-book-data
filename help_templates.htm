@@ -1,0 +1,89 @@
+<h1>OpenBook Template Help</h1>
+
+<p>Using OpenBook is as simple as placing a shortcode in a WordPress post, page or widget, e.g., [openbook booknumber="1234"] where "1234" is an ISBN or Open Library key. Nothing more is required. OpenBook will use the default templates to display a book cover, title, author, publisher, and links. This help file is intended for people who want to have more control over the content, ordering, and styling of the display.</p>
+
+<h2>OpenBook Templates</h2>
+
+<p>The templates are managed in the Settings|OpenBook panel of WordPress dashboard. There are three templates. The first template is used by default. You can use one of the other templates by specifying the template number inline with the shortcode, e.g., [openbook booknumber="1234" templatenumber="2"].</p>
+
+<h2>Display Elements</h2>
+
+<p>Templates determine what OpenBook displays. Templates can contain any text or HTML you want to display. As you see in the default templates, they also contain display elements, items in square brackets. When OpenBook finds one of the display elements, it replaces it with a predefined block of text or HTML. E.g., the [OB_COVER_MEDIUM] display element shows an Open Library book cover image of medium size with a link to Open Library. The elements make template assembly easy.</p>
+
+<p>There are two types of display elements: Open Library and Open Book.</p>
+
+<h3>Open Library Display Elements</h3>
+
+<p>Open Library display elements are the basic data elements from Open Library. Except for the images, these elements usually display straight text.</p>
+
+<p>
+<table>
+<tr style="font-weight:bold"><td>Display Element</td><td>Description</td></tr>
+<tr><td>[OL_BOOK_KEY]</td><td>Unique key used by Open Library to identify a book</td></tr>
+<tr><td>[OL_COVER_SMALL]</td><td>Url of small-sized cover image</td></tr>
+<tr><td>[OL_COVER_MEDIUM]</td><td>Url of medium-sized cover image</td></tr>
+<tr><td>[OL_COVER_LARGE]</td><td>Url of large-sized cover image</td></tr>
+<tr><td>[OL_TITLEPREFIX]</td><td>Title prefix</td></tr>
+<tr><td>[OL_TITLE]</td><td>Title</td></tr>
+<tr><td>[OL_SUBTITLE]</td><td>Subtitle</td></tr>
+<tr><td>[OL_AUTHORLIST]</td><td>List of authors</td></tr>
+<tr><td>[OL_AUTHORFIRST]</td><td>First author</td></tr>
+<tr><td>[OL_BYSTATEMENT]</td><td>By statement</td></tr>
+<tr><td>[OL_CONTRIBUTIONLIST]</td><td>List of contributors</td></tr>
+<tr><td>[OL_SERIESLIST]</td><td>List of series</td></tr>
+<tr><td>[OL_SERIESFIRST]</td><td>First series</td></tr>
+<tr><td>[OL_EDITION]</td><td>Edition</td></tr>
+<tr><td>[OL_PUBLISHERLIST]</td><td>List of publishers</td></tr>
+<tr><td>[OL_PUBLISHERFIRST]</td><td>First publisher</td></tr>
+<tr><td>[OL_PUBLISHPLACELIST]</td><td>List of publish places</td></tr>
+<tr><td>[OL_PUBLISHPLACEFIRST]</td><td>First publish place</td></tr>
+<tr><td>[OL_PUBLISHDATE]</td><td>Publish date</td></tr>
+<tr><td>[OL_COPYRIGHTDATE]</td><td>Copyright date</td></tr>
+<tr><td>[OL_PAGINATION]</td><td>Pagination</td></tr>
+<tr><td>[OL_SIZE]</td><td>Size</td></tr>
+<tr><td>[OL_PAGES]</td><td>Pages</td></tr>
+<tr><td>[OL_FORMAT]</td><td>Format</td></tr>
+<tr><td>[OL_WEIGHT]</td><td>Weight</td></tr>
+<tr><td>[OL_ISBN13LIST]</td><td>List of 13 digit ISBNs</td></tr>
+<tr><td>[OL_ISBN13FIRST]</td><td>First 13 digit ISBN</td></tr>
+<tr><td>[OL_ISBN10LIST]</td><td>List of 10 digit ISBNs</td></tr>
+<tr><td>[OL_ISBN10FIRST]</td><td>First 10 digit ISBN</td></tr>
+<tr><td>[OL_ISBN]</td><td>13 digit ISBN if available, else 10 digit ISBN, else blank</td></tr>
+<tr><td>[OL_SUBJECTLIST]</td><td>List of subjects</td></tr>
+<tr><td>[OL_GENRELIST]</td><td>List of genres</td></tr>
+<tr><td>[OL_URILIST]</td><td>List of uris</td></tr>
+<tr><td>[OL_PURCHASEURLLIST]</td><td>List of purchase urls</td></tr>
+<tr><td>[OL_DOWNLOADURLLIST]</td><td>List of download urls</td></tr>
+<tr><td>[OL_DESCRIPTION]</td><td>Description</td></tr>
+<tr><td>[OL_FIRSTSENTENCE]</td><td>First sentence</td></tr>
+<tr><td>[OL_NOTES]</td><td>Notes</td></tr>
+</table>
+
+<h3>OpenBook Display Elements</h3>
+
+<p>Open Book display elements use Open Library display elements and other data to construct more complex HTML display elements.</p>
+
+<p>
+<table>
+<tr style="font-weight:bold"><td>Display Element</td><td>Description</td></tr>
+<tr valign="top"><td>[OB_COVER_SMALL]</td><td>Small cover with descriptive hover text where available, and link to Open Library</td></tr>
+<tr valign="top"><td>[OB_COVER_MEDIUM]</td><td>Medium cover with descriptive hover text where available, and link to Open Library</td></tr>
+<tr valign="top"><td>[OB_COVER_LARGE]</td><td>Large cover with descriptive hover text where available, and link to Open Library</td></tr>
+<tr valign="top"><td>[OB_TITLE]</td><td>Title with link to Open Library book record</td></tr>
+<tr valign="top"><td>[OB_AUTHORS]</td><td>Author name with link to Open Library author record</td></tr>
+<tr valign="top"><td>[OB_PUBLISHER]</td><td>Publisher with link to publisher website if provided as inline parameter</td></tr>
+<tr valign="top"><td>[OB_PUBLISHYEAR]</td><td>Year the work was published</td></tr>
+<tr valign="top"><td>[OB_READONLINE]</td><td>Link to scanned work online, if available</td></tr>
+<tr valign="top"><td>[OB_LINK_FINDINLIBRARY]</td><td>Link to a particular library's records if an OpenURL resolver is configured in Settings</td></tr>
+<tr valign="top"><td>[OB_IMAGE_FINDINLIBRARY]</td><td>Image link to a particular library's records, if an image source and OpenURL resolver is configured in Settings</td></tr>
+<tr valign="top"><td>[OB_LINK_WORLDCAT]</td><td>Link to WorlCat by ISBN or title/author</td></tr>
+<tr valign="top"><td>[OB_LINK_LIBRARYTHING]</td><td>Link to LibraryThing by ISBN or title/author</td></tr>
+<tr valign="top"><td>[OB_LINK_GOOGLEBOOKS]</td><td>Link to GoogleBooks by ISBN or title/author</td></tr>
+<tr valign="top"><td>[OB_LINK_BOOKFINDER]</td><td>Link to BookFinder by ISBN or title/author</td></tr>
+<tr valign="top"><td>[OB_DOT]</td><td>A 'bullet' style delimiter. If an element is missing, OpenBook prevents duplicate dots from appearing beside each other.</td></tr>
+<tr valign="top"><td>[OB_COINS]</td><td>Invisible bibliographic for detection by other applications like Zotero</td></tr>
+</table>
+
+<h3>Styling</h3>
+
+<p>You can use inline styling in the templates, however the best practice is to add class attributes in the templates and manage the style in your WordPress stylesheet.</p>
