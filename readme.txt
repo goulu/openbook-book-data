@@ -60,4 +60,7 @@ Publishers generally like that people use their cover images because it promotes
 
 * Where do I get more detailed help?
 
-See the OpenBook support site at http://code.google.com/p/openbook4wordpress/ for detailed help and support. I encourage you to report problems at http://code.google.com/p/openbook4wordpress/issues/list. You can also check my website, http://johnmiedema.ca/openbook-wordpress-plugin/, or email me at openbook@johnmiedema.ca.
+See the OpenBook support site at http://code.google.com/p/openbook4wordpress/ for detailed help and support.
+
+I encourage you to report problems at http://code.google.com/p/openbook4wordpress/issues/list 
+You can also check my website http://johnmiedema.ca/openbook-wordpress-plugin/ or email me at openbook@johnmiedema.ca
