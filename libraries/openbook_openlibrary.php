@@ -2,6 +2,16 @@
 
 //module contains logic specific to Open Library
 
+//if json_decode is missing (< PHP5.2) use local json library
+//included in main openbook.php but also required here
+if(!function_exists('json_decode')) {
+	include_once('openbook_json.php');
+	function json_decode($data) {
+		$json = new Services_JSON_ob();
+		return( $json->decode($data) );
+	}
+}
+
 //get data for one book in Open Library
 class openbook_openlibrary_bookdata {
 
@@ -43,9 +53,9 @@ class openbook_openlibrary_bookdata {
 
 			$bookkey=$bookkeyresult[$bookversion];
 		}
-	
+
 		$url = $domain . "/api/get?key=".$bookkey."&text=true";
-		
+
 		$this->bookkey = $bookkey;
 		$this->bookdata = openbook_utilities_getUrlContents($url, $timeout, $proxy, $proxyport, OB_OPENLIBRARYDATAUNAVAILABLE_BOOK_LANG, $showerrors);
 	}

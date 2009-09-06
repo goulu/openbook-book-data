@@ -36,7 +36,7 @@ You can add titles to Open Library. It is like Wikipedia for books.
 
 * What if the title does not have an ISBN?
 
-You can use the Open Library number found in the Open Library URL, e.g., [openbook]/b/OL882707M[/openbook] from http://openlibrary.org/b/OL882707M.
+You can use the Open Library number found in the Open Library URL, e.g., [openbook booknumber="/b/OL882707M"] from http://openlibrary.org/b/OL882707M.
 
 * What if the cover image or other data is missing in Open Library?
 
@@ -60,4 +60,4 @@ Publishers generally like that people use their cover images because it promotes
 
 * Where do I get more detailed help?
 
-See the OpenBook support site at http://code.google.com/p/openbook4wordpress/ for detailed help and support. I encourage to report problems at http://code.google.com/p/openbook4wordpress/issues/list. You can also check my website, http://johnmiedema.ca/openbook-wordpress-plugin/, or email me at openbook@johnmiedema.ca.
+See the OpenBook support site at http://code.google.com/p/openbook4wordpress/ for detailed help and support. I encourage you to report problems at http://code.google.com/p/openbook4wordpress/issues/list. You can also check my website, http://johnmiedema.ca/openbook-wordpress-plugin/, or email me at openbook@johnmiedema.ca.

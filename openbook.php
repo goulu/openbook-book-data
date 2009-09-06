@@ -3,7 +3,7 @@
 Plugin Name: OpenBook
 Plugin URI: http://wordpress.org/extend/plugins/openbook-book-data/
 Description: Displays a book's cover image, title, author, and other book data from Open Library.
-Version: 2.1.7
+Version: 2.1.8
 Author: John Miedema
 Author URI: http://johnmiedema.ca/openbook-wordpress-plugin/
 Support URI: http://code.google.com/p/openbook4wordpress/
@@ -36,7 +36,7 @@ function ob_activation_check() {
 
 	//if json_decode is missing (< PHP5.2) use local json library
 	if(!function_exists('json_decode')) {
-		include_once('openbook_json.php');
+		include_once('libraries/openbook_json.php');
 		function json_decode($data) {
 			$json = new Services_JSON_ob();
 			return( $json->decode($data) );
