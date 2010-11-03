@@ -8,15 +8,17 @@ include_once('libraries/openbook_utilities.php');
 $template1 = stripslashes(get_option(OB_OPTION_TEMPLATE1_NAME));
 $template2 = stripslashes(get_option(OB_OPTION_TEMPLATE2_NAME));
 $template3 = stripslashes(get_option(OB_OPTION_TEMPLATE3_NAME));
+$template4 = stripslashes(get_option(OB_OPTION_TEMPLATE4_NAME));
+$template5 = stripslashes(get_option(OB_OPTION_TEMPLATE5_NAME));
 $openurlresolver = get_option(OB_OPTION_FINDINLIBRARY_OPENURLRESOLVER_NAME);
 $findinlibraryphrase = get_option(OB_OPTION_FINDINLIBRARY_PHRASE_NAME);
 $findinlibraryimagesrc = get_option(OB_OPTION_FINDINLIBRARY_IMAGESRC_NAME);
 $domain = get_option(OB_OPTION_LIBRARY_DOMAIN_NAME);
-$coverserver = get_option(OB_OPTION_LIBRARY_COVERSERVER_NAME);
 $proxy = get_option(OB_OPTION_PROXY_NAME);
 $proxyport = get_option(OB_OPTION_PROXYPORT_NAME);
 $timeout = get_option(OB_OPTION_TIMEOUT_NAME);
 $showerrors = get_option(OB_OPTION_SHOWERRORS_NAME);
+$savetemplates = get_option(OB_OPTION_SAVETEMPLATES_NAME);
 
 //files affected when you add an option:
 //language values in openbook_language.php
@@ -29,15 +31,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	$template1 = stripslashes($_POST[OB_OPTION_TEMPLATE1_NAME]);
 	$template2 = stripslashes($_POST[OB_OPTION_TEMPLATE2_NAME]);
 	$template3 = stripslashes($_POST[OB_OPTION_TEMPLATE3_NAME]);
+	$template4 = stripslashes($_POST[OB_OPTION_TEMPLATE4_NAME]);
+	$template5 = stripslashes($_POST[OB_OPTION_TEMPLATE5_NAME]);
 	$openurlresolver = $_POST[OB_OPTION_FINDINLIBRARY_OPENURLRESOLVER_NAME];
 	$findinlibraryphrase = $_POST[OB_OPTION_FINDINLIBRARY_PHRASE_NAME];
 	$findinlibraryimagesrc = $_POST[OB_OPTION_FINDINLIBRARY_IMAGESRC_NAME];
 	$domain = $_POST[OB_OPTION_LIBRARY_DOMAIN_NAME];
-	$coverserver = $_POST[OB_OPTION_LIBRARY_COVERSERVER_NAME];
 	$proxy = $_POST[OB_OPTION_PROXY_NAME];
 	$proxyport = $_POST[OB_OPTION_PROXYPORT_NAME];
 	$timeout = $_POST[OB_OPTION_TIMEOUT_NAME];
 	$showerrors = $_POST[OB_OPTION_SHOWERRORS_NAME]; if ($showerrors=='on') $showerrors=OB_HTML_CHECKED_TRUE;
+	$savetemplates = $_POST[OB_OPTION_SAVETEMPLATES_NAME]; if ($savetemplates=='on') $savetemplates=OB_HTML_CHECKED_TRUE;
 
 	if ($_REQUEST['action'] == 'save') {
 
@@ -46,6 +50,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 		saveOption(OB_OPTION_TEMPLATE2_NAME, $template2);
 		saveOption(OB_OPTION_TEMPLATE3_NAME, $template3);
+		saveOption(OB_OPTION_TEMPLATE4_NAME, $template4);
+		saveOption(OB_OPTION_TEMPLATE5_NAME, $template5);
 
 		saveOption(OB_OPTION_FINDINLIBRARY_OPENURLRESOLVER_NAME, $openurlresolver);
 
@@ -57,9 +63,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 		validateRequired(OB_OPTION_LIBRARY_DOMAIN_LANG, $domain);
 		saveOption(OB_OPTION_LIBRARY_DOMAIN_NAME, $domain);
 
-		validateRequired(OB_OPTION_LIBRARY_COVERSERVER_LANG, $coverserver);
-		saveOption(OB_OPTION_LIBRARY_COVERSERVER_NAME, $coverserver);
-
 		saveOption(OB_OPTION_PROXY_NAME, $proxy);
 		saveOption(OB_OPTION_PROXYPORT_NAME, $proxyport);
 
@@ -67,26 +70,29 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 		saveOption(OB_OPTION_TIMEOUT_NAME, $timeout);
 
 		saveOption(OB_OPTION_SHOWERRORS_NAME, $showerrors);
+		saveOption(OB_OPTION_SAVETEMPLATES_NAME, $savetemplates);
 
 		echo '<strong><em>' . OB_OPTIONS_CONFIRM_SAVED_LANG . '</strong></em>';
 	}
 	else if($_REQUEST['action'] == 'reset') {
-			
+
 		openbook_utilities_deleteOptions();
 		openbook_utilities_setDefaultOptions();
 
 		$template1 = get_option(OB_OPTION_TEMPLATE1_NAME);
 		$template2 = get_option(OB_OPTION_TEMPLATE2_NAME);
 		$template3 = get_option(OB_OPTION_TEMPLATE3_NAME);
+		$template4 = get_option(OB_OPTION_TEMPLATE4_NAME);
+		$template5 = get_option(OB_OPTION_TEMPLATE5_NAME);
 		$openurlresolver = get_option(OB_OPTION_FINDINLIBRARY_OPENURLRESOLVER_NAME);
 		$findinlibraryphrase = get_option(OB_OPTION_FINDINLIBRARY_PHRASE_NAME);
 		$findinlibraryimagesrc = get_option(OB_OPTION_FINDINLIBRARY_IMAGESRC_NAME);
 		$domain = get_option(OB_OPTION_LIBRARY_DOMAIN_NAME);
-		$coverserver = get_option(OB_OPTION_LIBRARY_COVERSERVER_NAME);
 		$proxy = get_option(OB_OPTION_PROXY_NAME);
 		$proxyport = get_option(OB_OPTION_PROXYPORT_NAME);
 		$timeout = get_option(OB_OPTION_TIMEOUT_NAME);
 		$showerrors = get_option(OB_OPTION_SHOWERRORS_NAME);
+		$savetemplates = get_option(OB_OPTION_SAVETEMPLATES_NAME);
 
 		echo '<strong><em>' . OB_OPTIONS_CONFIRM_RESET_LANG  . '</strong></em>';
 	}
@@ -109,7 +115,7 @@ function saveOption($option_name, $option_value) {
 	else {
     		$deprecated='';
     		$autoload='no';
-		delete_option($option_name); //handles case where option exists with a blank value - fails get_option test in this function
+			delete_option($option_name); //handles case where option exists with a blank value - fails get_option test in this function
     		add_option($option_name, $option_value, $deprecated, $autoload);
   	}
 }
@@ -121,7 +127,7 @@ function saveOption($option_name, $option_value) {
 <form method="post" action="">
 
 <h3><?php echo OB_OPTIONS_TEMPLATETEMPLATES_LANG; ?></h3>
-<p><?php echo OB_OPTIONS_TEMPLATETEMPLATES_DETAIL_LANG; ?></p>
+<p><?php echo OB_OPTIONS_TEMPLATETEMPLATES_DETAIL_LANG; ?><a href="http://code.google.com/p/openbook4wordpress/w/list">OpenBook Support Wiki</a>.</p>
 
 <table class="form-table">
 
@@ -140,25 +146,35 @@ function saveOption($option_name, $option_value) {
 <td><textarea cols="80" rows="8" name="<?php echo OB_OPTION_TEMPLATE3_NAME ?>" ><?php echo $template3; ?></textarea></td>
 </tr>
 
+<tr valign="top">
+<td><?php echo OB_OPTION_TEMPLATE4_LANG ?></td>
+<td><textarea cols="80" rows="8" name="<?php echo OB_OPTION_TEMPLATE4_NAME ?>" ><?php echo $template4; ?></textarea></td>
+</tr>
+
+<tr valign="top">
+<td><?php echo OB_OPTION_TEMPLATE5_LANG ?></td>
+<td><textarea cols="80" rows="8" name="<?php echo OB_OPTION_TEMPLATE5_NAME ?>" ><?php echo $template5; ?></textarea></td>
+</tr>
+
 </table>
 
 <h3><?php echo OB_OPTIONS_FINDINLIBRARY_LANG; ?></h3>
 <table class="form-table">
 
 <tr valign="top">
-<td><?php echo OB_OPTIONS_FINDINLIBRARY_OPENURLRESOLVER_LANG; ?></td>
-<td><input type="text" name="<?php echo OB_OPTION_FINDINLIBRARY_OPENURLRESOLVER_NAME ?>" value="<?php echo $openurlresolver; ?>" size="50" /></td>
+<td width="12%"><?php echo OB_OPTIONS_FINDINLIBRARY_OPENURLRESOLVER_LANG; ?></td>
+<td width="28%"><input type="text" name="<?php echo OB_OPTION_FINDINLIBRARY_OPENURLRESOLVER_NAME ?>" value="<?php echo $openurlresolver; ?>" size="50" /></td>
 <td><?php echo OB_OPTIONS_FINDINLIBRARY_OPENURLRESOLVER_DETAIL_LANG; ?> <a href="http://www.worldcat.org/registry/institutions">WorldCat Registry</a>.</td>
 </tr>
 
 <tr valign="top">
-<td width="12%"><?php echo OB_OPTIONS_FINDINLIBRARY_PHRASE_LANG; ?></td>
+<td><?php echo OB_OPTIONS_FINDINLIBRARY_PHRASE_LANG; ?></td>
 <td><input type="text" name="<?php echo OB_OPTION_FINDINLIBRARY_PHRASE_NAME; ?>" value="<?php echo $findinlibraryphrase; ?>" size="50" /></td>
 <td><?php echo OB_OPTIONS_FINDINLIBRARY_PHRASE_DETAIL_LANG; ?></td>
 </tr>
 
 <tr valign="top">
-<td width="12%"><?php echo OB_OPTIONS_FINDINLIBRARY_IMAGESRC_LANG; ?></td>
+<td><?php echo OB_OPTIONS_FINDINLIBRARY_IMAGESRC_LANG; ?></td>
 <td><input type="text" name="<?php echo OB_OPTION_FINDINLIBRARY_IMAGESRC_NAME; ?>" value="<?php echo $findinlibraryimagesrc; ?>" size="50" /></td>
 <td><?php echo OB_OPTIONS_FINDINLIBRARY_IMAGESRC_DETAIL_LANG; ?></td>
 </tr>
@@ -170,14 +186,8 @@ function saveOption($option_name, $option_value) {
 
 <tr valign="top">
 <td width="12%"><?php echo OB_OPTIONS_LIBRARY_DOMAIN_LANG; ?></td>
-<td><input type="text" name="<?php echo OB_OPTION_LIBRARY_DOMAIN_NAME ?>" value="<?php echo $domain; ?>" size="50" /></td>
+<td width="28%"><input type="text" name="<?php echo OB_OPTION_LIBRARY_DOMAIN_NAME ?>" value="<?php echo $domain; ?>" size="50" /></td>
 <td><?php echo OB_OPTIONS_LIBRARY_DOMAIN_DETAIL_LANG; ?></td>
-</tr>
-
-<tr valign="top">
-<td><?php echo OB_OPTIONS_LIBRARY_COVERSERVER_LANG; ?></td>
-<td><input type="text" name="<?php echo OB_OPTION_LIBRARY_COVERSERVER_NAME ?>" value="<?php echo $coverserver; ?>" size="50" /></td>
-<td><?php echo OB_OPTIONS_LIBRARY_COVERSERVER_DETAIL_LANG; ?></td>
 </tr>
 
 <tr valign="top">
@@ -202,6 +212,12 @@ function saveOption($option_name, $option_value) {
 <td><?php echo OB_OPTIONS_SHOWERRORS_LANG; ?></td>
 <td><input type="checkbox" name="<?php echo OB_OPTION_SHOWERRORS_NAME; ?>" <?php echo ' ' . $showerrors . ' '; ?> /> </td>
 <td><?php echo OB_OPTIONS_SHOWERRORS_DETAIL_LANG; ?></td>
+</tr>
+
+<tr valign="top">
+<td><?php echo OB_OPTIONS_SAVETEMPLATES_LANG; ?></td>
+<td><input type="checkbox" name="<?php echo OB_OPTION_SAVETEMPLATES_NAME; ?>" <?php echo ' ' . $savetemplates . ' '; ?> /> </td>
+<td><?php echo OB_OPTIONS_SAVETEMPLATES_DETAIL_LANG; ?></td>
 </tr>
 
 </table>

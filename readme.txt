@@ -2,14 +2,15 @@
 Contributors: johnmiedema
 Tags: book, books, reading, book reviews, library, libraries, book covers, COinS, OpenURL
 Requires at least: 2.5.1
-Tested up to: 2.9
+Tested up to: 3.0
 Stable tag: trunk
 
-Displays a book's cover image, title, author, publisher and other book data from Open Library.
+Displays a book's cover image, title, author, links, and other book data from Open Library.
 
 == Description ==
 
-OpenBook is for book reviewers, book bloggers, library webmasters, anyone who wants to put book covers and data on their WordPress blog or website. Insert an OpenBook 'shortcode' with a book number in a WordPress post, page or widget, and OpenBook will display a book cover image, author, and other book data from Open Library (http://openlibrary.org). It also displays links to book websites. Users can control the content and styling through templates. Librarians can point OpenBook to their library records using an OpenURL resolver. 
+OpenBook is for book reviewers, book bloggers, library webmasters, anyone who wants to put book covers and data on their WordPress blog or website. 
+Use the OpenBook button in the WordPress visual editor or insert an OpenBook 'shortcode' with a book number in a WordPress post, page or widget. OpenBook will display a book cover image, author, and other book data from Open Library (http://openlibrary.org). It also displays links to book websites. Users can control the content and styling through templates. Librarians can point OpenBook to their library records using an OpenURL resolver. 
 
 Requirements. To use OpenBook, your server must use PHP 5 or higher, and cURL must be enabled. 
 
@@ -36,7 +37,7 @@ You can add titles to Open Library. It is like Wikipedia for books.
 
 * What if the title does not have an ISBN?
 
-You can use the Open Library number found in the Open Library URL, e.g., [openbook booknumber="/b/OL882707M"] from http://openlibrary.org/b/OL882707M.
+You can use the Open Library number found in the Open Library URL, e.g., [openbook booknumber="OL882707M"] from http://openlibrary.org/b/OL882707M.
 
 * What if the cover image or other data is missing in Open Library?
 
@@ -44,7 +45,7 @@ If an image is missing, OpenBook will show a blank for the image. You can add co
 
 * What happens if Open Library is slow, down, or unavailable?
 
-Open Library's cover and/or data servers may be slow, down or otherwise unavailable for periods of time. OpenBook timeouts in ten seconds (or the value configured in Settings) and displays a message where the data would normally go: "Open Library Data Unavailable". When Open Library becomes available, the book data will be displayed normally.
+Open Library's cover and/or data servers are up most of the time, but this cannot be guaranteed. OpenBook times out in ten seconds (or the value configured in Settings) and displays a message where the data would normally go: "Open Library Data Unavailable". When Open Library becomes available, the book data will be displayed normally.
 
 * How do I change the display of OpenBook?
 
@@ -60,7 +61,25 @@ Publishers generally like that people use their cover images because it promotes
 
 * Where do I get more detailed help?
 
-See the OpenBook support site at http://code.google.com/p/openbook4wordpress/ for detailed help and support.
+OpenBook support site: http://code.google.com/p/openbook4wordpress/
+Report a problem: http://code.google.com/p/openbook4wordpress/issues/list
+Join the OpenBook discussion list: http://groups.google.com/group/openbook4wordpress
 
-I encourage you to report problems at http://code.google.com/p/openbook4wordpress/issues/list 
-You can also check my website http://johnmiedema.ca/openbook-wordpress-plugin/ or email me at openbook@johnmiedema.ca
+== Screenshots ==
+
+1. Insert a book number, e.g., ISBN, using an OpenBook shortcode.
+2. Or use the OpenBook form to insert a book number and parameters. You can preview the display.
+3. OpenBook displays book data from Open Library.
+4. Customize the display using OpenBook's templates.
+
+== Changelog ==
+
+= 3.1.0 =
+
+* Uses new Open API (server-side Books API) to retreive all book data in a single call => faster load times
+* New button opens Visual Editor form for easy insertion of OpenBook shortcode => no need to remember shortcode syntax
+* Visual Editor form also provides HMTL option instead of shortcodes; embeds HTML in post => even faster load times!
+* Allow use of multiple book number types, including Open Library ID with revision number
+
+
+

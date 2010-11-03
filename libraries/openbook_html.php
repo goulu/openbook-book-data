@@ -3,62 +3,56 @@
 //module handles all openbook html formatting
 //no styling here, just html
 
-function openbook_html_getCoverImage($coversize, $domain, $coverserver, $bookkey, $title, $firstsentencetext, $descriptiontext, $notestext) {
-	
-	//cover url, medium size
-	$url_coverimage = openbook_openlibrary_geturl_coverimage($coverserver, $bookkey, $coversize);
-	
-	//'tooltip' text that shows when user hovers over cover image
-	$hovertext = "";
-	if ($firstsentencetext != "") $hovertext = OB_DISPLAY_FIRSTSENTENCE_LANG . $firstsentencetext;
-	if ($descriptiontext != "") {
-		if ($hovertext != "") $hovertext .= " ";
-		$hovertext .= OB_DISPLAY_DESCRIPTION_LANG . $descriptiontext;
-	}
-	if ($notestext != "") {
-		if ($hovertext != "") $hovertext .= " ";
-		$hovertext .= OB_DISPLAY_NOTES_LANG . $notestext;
-	}
-	if ($hovertext == "") $hovertext = OB_DISPLAY_CLICKTOVIEWTITLEINOL_LANG;
-	else $hovertext = OB_DISPLAY_CLICKTOVIEWTITLEINOL_LANG . '. ' .$hovertext;
-	
+function openbook_html_getCoverImage($url_coverimage, $title, $ol_url, $revisionnumber) {
+
+	if ($url_coverimage == "") return "";
+
+	//tooltip text that shows when user hovers over cover image
+	$hovertext = OB_DISPLAY_CLICKTOVIEWTITLEINOL_LANG;
+
 	//assemble image html
 	$html_image = "<img src='" . $url_coverimage . "' alt='" . $title . "' title='" . $hovertext . "' />";
-	
+
+	//if a revision number is given, modify page url
+	if ($revisionnumber != "") $ol_url = $ol_url . "?v=" . $revisionnumber;
+
 	//wrap in link to book record in Open Library
-	$url_bookpage = openbook_openlibrary_geturl_book($domain, $bookkey);
-	
-	$html_coverimage = "<a href='" . $url_bookpage . "' >" . $html_image . "</a>"; 
+	$html_coverimage = "<a href='" . $ol_url . "' >" . $html_image . "</a>";
 
 	return $html_coverimage;
 }
 
-function openbook_html_getTitle($domain, $bookkey, $titleprefix, $title, $subtitle) {
+function openbook_html_getTitle($ol_url, $revisionnumber, $title, $subtitle) {
 
-	if ($titleprefix != "") $title = $titleprefix . " " . $title;
-	if ($subtitle != "") $title .= ": " . $subtitle; 
-	
-	$url_bookpage = openbook_openlibrary_geturl_book($domain, $bookkey);
+	if ($subtitle != "") $title .= ": " . $subtitle;
 
-	$html_title = "<a href='" . $url_bookpage . "' title='" . OB_DISPLAY_CLICKTOVIEWTITLEINOL_LANG . "' >" . $title . "</a>";
+	//if a revision number is given, modify page url
+	if ($revisionnumber != "") $ol_url = $ol_url . "?v=" . $revisionnumber;
+
+	$html_title = "<a href='" . $ol_url . "' title='" . OB_DISPLAY_CLICKTOVIEWTITLEINOL_LANG . "' >" . $title . "</a>";
 
 	return $html_title;
 }
 
-function openbook_html_getAuthors($domain, $author_array, $bystatement, $contributions) {
+function openbook_html_getAuthors($authors, $bystatement, $contributions) {
 
-	$authorlinks = array();
+	$html_authors = "";
 
-	foreach($author_array as $author) {
-		$authorkey = $author['key'];
-		$authorname = $author['name'];
+	if (count($authors)>0) {
 
-		$url_author = openbook_openlibrary_geturl_author($domain, $authorkey);
-		$html_author =  "<a href='" . $url_author . "' title='" . OB_DISPLAY_CLICKTOVIEWAUTHORINOL_LANG . "' >" . $authorname . "</a>";
-		$authorlinks[] = $html_author;
+		$authorlinks = array();
+
+		foreach($authors as $author) {
+
+			$authorname = openbook_openlibrary_extractValue($author, 'name');
+			$authorurl = openbook_openlibrary_extractValue($author, 'url');
+
+			$html_author =  "<a href='" . $authorurl . "' title='" . OB_DISPLAY_CLICKTOVIEWAUTHORINOL_LANG . "' >" . $authorname . "</a>";
+			$authorlinks[] = $html_author;
+		}
+
+		$html_authors = join(', ', $authorlinks);
 	}
-
-	$html_authors = join(', ', $authorlinks);
 
 	//if no author, use alternate, no author link
 	if (!$html_authors) $html_authors = $bystatement;
@@ -73,9 +67,10 @@ function openbook_html_getPublisher($publisher, $publisherurl) {
 	if ($publisher != '') {
 		$html_publisher = $publisher;
 		if ($publisherurl != '') {
-			$html_publisher = "<a href='" . $publisherurl . "' title=" . OB_DISPLAY_CLICKTOVIEWPUBLISHER_LANG . "' >" . $publisher . "</a>";
+			$html_publisher = "<a href='" . $publisherurl . "' title='" . OB_DISPLAY_CLICKTOVIEWPUBLISHER_LANG . "' >" . $publisher . "</a>";
 		}
 	}
+
 	return 	$html_publisher;
 }
 
@@ -97,11 +92,10 @@ function openbook_html_getPublishYear($publishdate) {
 	}
 }
 
-function openbook_html_getReadOnline($domain, $ocaid) {
+function openbook_html_getReadOnline($url) {
 
 	$readonline = "";
-	if ($ocaid) {
-		$url = $domain . '/details/' . $ocaid;
+	if ($url != '') {
 		$readonline = '<a href="' . $url . '" title="' . OB_DISPLAY_READONLINE_TITLE_LANG . '">' . OB_DISPLAY_READONLINE_LANG . '</a>';
 	}
 	return $readonline;
@@ -131,43 +125,43 @@ function openbook_html_getFindInLibraryImage($openurlresolver, $openurl, $findin
 	return $html_findinlibraryimage;
 }
 
-function openbook_html_getOpenUrl($openurlresolver, $title, $isbn, $authorlist, $publishplace, $publisher, $publishdate, $edition, $pages, $series) {
-	
+function openbook_html_getOpenUrl($openurlresolver, $title, $isbn, $authorlist, $publishplace, $publisher, $publishdate, $pages) {
+
 	if (!openurlresolver) return "";
 
 	$openurl = $openurlresolver;
 	$openurl .= '?url_ver=Z39.88-2004';
 	$openurl .= '&amp;rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Abook';
-	$openurl .= openbook_html_getCoinsContents($title, $isbn, $authorlist, $publishplace, $publisher, $publishdate, $edition, $pages, $series);
+	$openurl .= openbook_html_getCoinsContents($title, $isbn, $authorlist, $publishplace, $publisher, $publishdate, $pages);
 
 	return $openurl;
 }
 
 //build the HTML for coins, as per http://ocoins.info/
-function openbook_html_getCoins($title, $isbn, $authorlist, $publishplace, $publisher, $publishdate, $edition, $pages, $series) {
+function openbook_html_getCoins($title, $isbn, $authorlist, $publishplace, $publisher, $publishdate, $pages) {
 
 	$domain = openbook_utilities_getDomain();
 
 	//meta values
 	$coins .= '<span class="Z3988" ';
 	$coins .= 'title="ctx_ver=Z39.88-2004';
-	$coins .= '&amp;rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Abook'; 
+	$coins .= '&amp;rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Abook';
 	$coins .= '&amp;rfr_id=info%3Asid%2F' . $domain . '%3AOpenBook';
 	$coins .= '&amp;rft.genre=book';
 
-	$coins .= openbook_html_getCoinsContents($title, $isbn, $authorlist, $publishplace, $publisher, $publishdate, $edition, $pages, $series);
+	$coins .= openbook_html_getCoinsContents($title, $isbn, $authorlist, $publishplace, $publisher, $publishdate, $pages);
 
 	//end
-	$coins .= '"></span>';	
+	$coins .= '"></span>';
 
 	return $coins;
 }
 
-function openbook_html_getCoinsContents($title, $isbn, $authorlist, $publishplace, $publisher, $publishdate, $edition, $pages, $series) {
+function openbook_html_getCoinsContents($title, $isbn, $authorlist, $publishplace, $publisher, $publishdate, $pages) {
 
 	$contents = "";
 
-	//title, includes subtitle	
+	//title, includes subtitle
 	$title = urlencode($title);
 	if ($title != "") $contents .= '&amp;rft.btitle=' . $title;
 
@@ -175,12 +169,12 @@ function openbook_html_getCoinsContents($title, $isbn, $authorlist, $publishplac
 
 	//authors
 	$authors_coins = "";
-	
+
 	$authors = explode(",", $authorlist);
 	$authorcount = count($authors);
 	for($i=0;$i<$authorcount;$i++) {
 		$author = $authors[$i]; //Open Library shows "William Shakespeare", i.e., first and lastname as one field;
-		$author = urlencode($author);			
+		$author = urlencode($author);
 		$author_coins = '&amp;rft.au=' . $author;
 		$authors_coins .= $author_coins;
 	}
@@ -195,71 +189,124 @@ function openbook_html_getCoinsContents($title, $isbn, $authorlist, $publishplac
 	$publishdate = urlencode($publishdate);
 	if ($publishdate != "") $contents .= "&amp;rft.date=" . $publishdate;
 
-	$edition = urlencode($edition);
-	if ($edition != "") $contents .= "&amp;rft.edition=" . $edition;
-
 	$pages = urlencode($pages);
 	if ($pages != "") $contents .= "&amp;rft.tpages=" . $pages;
-
-	$series = urlencode($series);
-	if ($series != "") $contents .= "&amp;rft.series=" . $series;
 
 	return $contents;
 }
 
-function openbook_html_getLinkWorldCat($isbn, $title, $author) {
+function openbook_html_getLinks($links) {
 
-	$html_worldcat = "";
+	if (count($links)==0) return "";
 
-	if (!$isbn && !$title) return ""; //if no isbn or title, this feature will be blank
+	$linklinks = array();
 
-	if ($isbn) $url = 'http://worldcat.org/isbn/' . $isbn; //isbn search
-	else {
-		//search by title and author -- expects spaces in these values as '+'
-		$url = 'http://www.worldcat.org/search?q=ti%3A' . $title; 
-		if ($author) $url .= '+au%3A' . $au;
-		$url .= '&qt=advanced';
+	foreach($links as $link) {
+
+		$linktitle = openbook_openlibrary_extractValue($author, 'title');
+		$linkurl = openbook_openlibrary_extractValue($author, 'url');
+
+		$html_link =  "<a href='" . $linkurl . "' title='" . $linktitle . "' >" . $linktitle . "</a>";
+		$linklinks[] = $html_link;
 	}
 
-	$html_worldcat = '<a href="' . $url . '" title="' . OB_DISPLAY_WORLDCAT_TITLE_LANG . '">' . OB_DISPLAY_WORLDCAT_LANG . '</a>';
+	$html_links = join(', ', $linklinks);
 
-	return $html_worldcat;
+	return $html_links;
 }
 
-function openbook_html_getLinkLibraryThing($isbn, $title, $author) {
+function openbook_html_getLinkAmazon($OL_ID_AMAZON) {
 
-	$html_librarything = "";
+	if (!$OL_ID_AMAZON) return "";
+	$url = 'http://www.amazon.com/gp/product/' . $OL_ID_AMAZON;
+	$html_link = '<a href="' . $url . '" title="' . OB_DISPLAY_AMAZON_TITLE_LANG . '">' . OB_DISPLAY_AMAZON_LANG . '</a>';
 
-	if (!$isbn && !$title) return ""; //if no isbn or title, this feature will be blank
+	return $html_link;
+}
 
-	if ($isbn) $url = 'http://librarything.com/isbn/' . $isbn; //isbn search
-	else {
-		//search by title and author -- expects spaces in these values as '+'
-		$url = 'http://www.librarything.com/search_works.php?q=' . $title; 
-		if ($author) $url .= '+' . $author;
+function openbook_html_getLinkGoodreads($OL_ID_GOODREADS) {
+
+	if (!$OL_ID_GOODREADS) return "";
+	$url = 'http://www.goodreads.com/book/show/' . $OL_ID_GOODREADS;
+	$html_link = '<a href="' . $url . '" title="' . OB_DISPLAY_GOODREADS_TITLE_LANG . '">' . OB_DISPLAY_GOODREADS_LANG . '</a>';
+
+	return $html_link;
+}
+
+function openbook_html_getLinkGoogleBooks($OL_ID_GOOGLE, $isbn, $title, $author) {
+
+	if ($OL_ID_GOOGLE) {
+		$url = 'http://books.google.com/books?id=' . $OL_ID_GOOGLE;
 	}
-
-	$html_librarything = '<a href="' . $url . '" title="' . OB_DISPLAY_LIBRARYTHING_TITLE_LANG . '">' . OB_DISPLAY_LIBRARYTHING_LANG . '</a>';
-
-	return $html_librarything;
-}
-
-function openbook_html_getLinkGoogleBooks($isbn, $title, $author) {
-
-	$html_googlebooks = "";
-
-	if (!$isbn && !$title) return ""; //if no isbn or title, this feature will be blank
-
-	if ($isbn) $url = 'http://books.google.com/books?as_isbn=' . $isbn; //isbn search
-	else {
-		//search by title and author -- expects spaces in these values as '+'
-		$url = 'http://books.google.com/books?&as_vt=' . $title; 
+	elseif ($isbn) {
+		$url = 'http://books.google.com/books?as_isbn=' . $isbn; //isbn search
+	}
+	elseif ($title) {
+		//search by title and author
+		$url = 'http://books.google.com/books?&as_vt=' . $title;
 		if ($author) $url .= '&as_auth=' . $author;
 	}
+	else { return ""; }
 
-	$html_googlebooks = '<a href="' . $url . '" title="' . OB_DISPLAY_GOOGLEBOOKS_TITLE_LANG . '">' . OB_DISPLAY_GOOGLEBOOKS_LANG . '</a>';
+	$html_link = '<a href="' . $url . '" title="' . OB_DISPLAY_GOOGLEBOOKS_TITLE_LANG . '">' . OB_DISPLAY_GOOGLEBOOKS_LANG . '</a>';
+	return $html_link;
+}
 
-	return $html_googlebooks;
+function openbook_html_getLinkLibraryCongress($OL_ID_LCCN) {
+
+	if (!$OL_ID_LCCN) return "";
+	$url = 'http://lccn.loc.gov/' . $OL_ID_LCCN;
+	$html_link = '<a href="' . $url . '" title="' . OB_DISPLAY_LIBRARYCONGRESS_TITLE_LANG . '">' . OB_DISPLAY_LIBRARYCONGRESS_LANG . '</a>';
+
+	return $html_link;
+}
+
+function openbook_html_getLinkLibraryThing($OL_ID_LIBRARYTHING, $isbn, $title, $author) {
+
+	if ($OL_ID_LIBRARYTHING) {
+		$url = 'http://www.librarything.com/work/' . $OL_ID_LIBRARYTHING;
+	}
+	elseif ($isbn) {
+		$url = 'http://librarything.com/isbn/' . $isbn; //isbn search
+	}
+	elseif ($title) {
+		//search by title and author
+		$url = 'http://www.librarything.com/search_works.php?q=' . $title;
+		if ($author) $url .= '+' . $author;
+	}
+	else { return ""; }
+
+	$html_link = '<a href="' . $url . '" title="' . OB_DISPLAY_LIBRARYTHING_TITLE_LANG . '">' . OB_DISPLAY_LIBRARYTHING_LANG . '</a>';
+	return $html_link;
+}
+
+function openbook_html_getLinkWorldCat($OL_ID_OCLCWORLDCAT, $isbn, $title, $author) {
+
+	if ($OL_ID_OCLCWORLDCAT) {
+		$url = 'http://www.worldcat.org/oclc/' . $OL_ID_OCLCWORLDCAT;
+	}
+	elseif ($isbn) {
+		$url = 'http://worldcat.org/isbn/' . $isbn; //isbn search
+	}
+	elseif ($title) {
+		//search by title and author
+		$url = 'http://www.worldcat.org/search?q=ti%3A' . $title;
+		if ($author) $url .= '+au%3A' . $author;
+		$url .= '&qt=advanced';
+	}
+	else { return ""; }
+
+	$html_link = '<a href="' . $url . '" title="' . OB_DISPLAY_WORLDCAT_TITLE_LANG . '">' . OB_DISPLAY_WORLDCAT_LANG . '</a>';
+	return $html_link;
+}
+
+function openbook_html_getLinkProjectGutenberg($OL_ID_PROJECTGUTENBERG) {
+
+	if (!$OL_ID_PROJECTGUTENBERG) return "";
+	$url = 'http://www.gutenberg.org/etext/' . $OL_ID_PROJECTGUTENBERG;
+	$html_link = '<a href="' . $url . '" title="' . OB_DISPLAY_PROJECTGUTENBERG_TITLE_LANG . '">' . OB_DISPLAY_PROJECTGUTENBERG_LANG . '</a>';
+
+	return $html_link;
 }
 
 function openbook_html_getLinkBookFinder($isbn, $title, $author) {
@@ -271,7 +318,7 @@ function openbook_html_getLinkBookFinder($isbn, $title, $author) {
 	if ($isbn) $url = 'http://www.bookfinder.com/search/?st=xl&ac=qr&isbn=' . $isbn; //isbn search
 	else {
 		//search by title and author -- expects spaces in these values as '+'
-		$url = 'http://www.bookfinder.com/search/?submit=Begin+search&new_used=*&mode=basic&st=sr&ac=qr&title=' . $title; 
+		$url = 'http://www.bookfinder.com/search/?submit=Begin+search&new_used=*&mode=basic&st=sr&ac=qr&title=' . $title;
 		if ($author) $url .= '&author=' . $author;
 		//there is an available language parameter for the search
 	}
@@ -288,8 +335,8 @@ function openbook_html_setDelimiters($display) {
 	$display = str_replace($exceptions, '[OB_DOT]', $display);
 	$display = str_replace($exceptions, '[OB_DOT]', $display); //first run is supposed to replace all, but doesn't
 
-	$display = str_replace('[OB_DOT]', '&sdot;', $display);
-	
+	$display = str_replace('[OB_DOT]', '&#8226;', $display);
+
 	return $display;
 }
 
