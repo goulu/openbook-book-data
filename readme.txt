@@ -14,7 +14,7 @@ Use the OpenBook button in the WordPress visual editor or insert an OpenBook 'sh
 
 Requirements. To use OpenBook, your server must use PHP 5 or higher, and cURL must be enabled. 
 
-== Installation and Basic Use ==
+== Installation ==
 
 1. Deactivate any previous version of OpenBook through the 'Plugins' menu in WordPress.
 2. Delete any previous version of OpenBook in the `/wp-content/plugins/` directory.
@@ -80,6 +80,12 @@ Join the OpenBook discussion list: http://groups.google.com/group/openbook4wordp
 * New button opens Visual Editor form for easy insertion of OpenBook shortcode => no need to remember shortcode syntax
 * Visual Editor form also provides HMTL option instead of shortcodes; embeds HTML in post => even faster load times!
 * Allow use of multiple book number types, including Open Library ID with revision number
+
+== Upgrade Notice ==
+
+= 3.1.0 =
+
+* Performance and feature enhancements. Recommend upgrade.
 
 
 
