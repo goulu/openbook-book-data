@@ -10,9 +10,12 @@ Displays a book's cover image, title, author, links, and other book data from Op
 == Description ==
 
 OpenBook is for book reviewers, book bloggers, library webmasters, anyone who wants to put book covers and data on their WordPress blog or website. 
-Use the OpenBook button in the WordPress visual editor or insert an OpenBook 'shortcode' with a book number in a WordPress post, page or widget. OpenBook will display a book cover image, author, and other book data from Open Library (http://openlibrary.org). It also displays links to book websites. Users can control the content and styling through templates. Librarians can point OpenBook to their library records using an OpenURL resolver. 
+Use the OpenBook button in the WordPress visual editor or insert an OpenBook 'shortcode' with a book number in a WordPress post, page or widget. OpenBook will display a book cover image, author, and other book data from Open Library (http://openlibrary.org). It also displays links to book websites. Users can control the content and styling through templates. OpenBook inserts COinS to integrate with applications like Zotero. Librarians can point OpenBook to their library records using an OpenURL resolver. 
 
 Requirements. To use OpenBook, your server must use PHP 5 or higher, and cURL must be enabled. 
+
+Find more information or report a problem at the OpenBook support wiki: http://code.google.com/p/openbook4wordpress/.
+
 
 == Installation ==
 
@@ -20,7 +23,7 @@ Requirements. To use OpenBook, your server must use PHP 5 or higher, and cURL mu
 2. Delete any previous version of OpenBook in the `/wp-content/plugins/` directory.
 3. Upload the entire openbook folder to the `/wp-content/plugins/` directory.
 4. Activate the plugin through the 'Plugins' menu in WordPress.
-5. In your post, page, or text widget, insert the openbook tags and an ISBN number, like so: [openbook booknumber="0864921535"].
+5. Insert an instance of OpenBook in one of two ways. Using the WordPress visual editor, click the OpenBook button to add a form for entering a book number and options, then click Preview or Insert. Or, in a post, page, or text widget, insert the openbook tags and an ISBN number, like so: [openbook booknumber="0864921535"].
 6. Type your content as usual after the tags
 
 By default, OpenBook will display a book cover image, title, author, and publisher, along with links to Open Library, WorldCat, and other book sites.
@@ -74,6 +77,10 @@ Join the OpenBook discussion list: http://groups.google.com/group/openbook4wordp
 
 == Changelog ==
 
+= 3.1.1 =
+
+* Fixed problem that added OpenBook 'Settings' link to every plugin.
+
 = 3.1.0 =
 
 * Uses new Open API (server-side Books API) to retreive all book data in a single call => faster load times
@@ -82,6 +89,10 @@ Join the OpenBook discussion list: http://groups.google.com/group/openbook4wordp
 * Allow use of multiple book number types, including Open Library ID with revision number
 
 == Upgrade Notice ==
+
+= 3.1.1 =
+
+* Fixed problem that added OpenBook 'Settings' link to every plugin. Recommend upgrade.
 
 = 3.1.0 =
 
