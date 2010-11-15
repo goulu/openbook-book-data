@@ -3,7 +3,7 @@ Contributors: johnmiedema
 Tags: book, books, reading, book reviews, library, libraries, book covers, COinS, OpenURL
 Requires at least: 2.5.1
 Tested up to: 3.0
-Stable tag: trunk
+Stable tag: 3.1.1
 
 Displays a book's cover image, title, author, links, and other book data from Open Library.
 
