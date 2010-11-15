@@ -23,7 +23,7 @@ Find more information or report a problem at the OpenBook support wiki: http://c
 2. Delete any previous version of OpenBook in the `/wp-content/plugins/` directory.
 3. Upload the entire openbook folder to the `/wp-content/plugins/` directory.
 4. Activate the plugin through the 'Plugins' menu in WordPress.
-5. Insert an instance of OpenBook in one of two ways. Using the WordPress visual editor, click the OpenBook button to add a form for entering a book number and options, then click Preview or Insert. Or, in a post, page, or text widget, insert the openbook tags and an ISBN number, like so: [openbook booknumber="0864921535"].
+5. Insert an instance of OpenBook in one of two ways. Using the WordPress visual editor, click the OpenBook button to open a form for entering a book number and options, then click Preview or Insert. Or, in a post, page, or text widget, insert the openbook tags and an ISBN number, like so: [openbook booknumber="0864921535"].
 6. Type your content as usual after the tags
 
 By default, OpenBook will display a book cover image, title, author, and publisher, along with links to Open Library, WorldCat, and other book sites.
