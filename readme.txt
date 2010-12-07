@@ -3,7 +3,7 @@ Contributors: johnmiedema
 Tags: book, books, reading, book reviews, library, libraries, book covers, COinS, OpenURL
 Requires at least: 2.5.1
 Tested up to: 3.0
-Stable tag: 3.1.1
+Stable tag: 3.1.2
 
 Displays a book's cover image, title, author, links, and other book data from Open Library.
 
@@ -76,6 +76,10 @@ Join the OpenBook discussion list: http://groups.google.com/group/openbook4wordp
 4. Customize the display using OpenBook's templates.
 
 == Changelog ==
+
+= 3.1.2 =
+
+* Fixed WorldCat link generated from visual form, shortcode method.
 
 = 3.1.1 =
 

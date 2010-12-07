@@ -3,7 +3,7 @@
 Plugin Name: OpenBook
 Plugin URI: http://wordpress.org/extend/plugins/openbook-book-data/
 Description: Displays a book's cover image, title, author, links, and other book data from Open Library.
-Version: 3.1.1
+Version: 3.1.2
 Author: John Miedema
 Author URI: http://code.google.com/p/openbook4wordpress/
 
@@ -203,7 +203,7 @@ function openbook_insertbookdata($atts, $content = null) {
 		$OL_ID_GOODREADS = openbook_openlibrary_extractFirstFromArray($identifiers, 'goodreads');
 		$OL_ID_GOOGLE = openbook_openlibrary_extractFirstFromArray($identifiers, 'google');
 		$OL_ID_ISBN10 = openbook_openlibrary_extractFirstFromArray($identifiers, 'isbn_10');
-		$OL_ID_ISBN13 = openbook_openlibrary_extractFirstFromArray($identifiers, 'lccn');
+		$OL_ID_ISBN13 = openbook_openlibrary_extractFirstFromArray($identifiers, 'isbn_13');
 		$OL_ID_LCCN = openbook_openlibrary_extractFirstFromArray($identifiers, 'lccn');
 		$OL_ID_LIBRARYTHING = openbook_openlibrary_extractFirstFromArray($identifiers, 'librarything');
 		$OL_ID_OCLCWORLDCAT = openbook_openlibrary_extractFirstFromArray($identifiers, 'oclc');
@@ -211,8 +211,8 @@ function openbook_insertbookdata($atts, $content = null) {
 		$OL_ID_OPENLIBRARY = openbook_openlibrary_extractFirstFromArray($identifiers, 'openlibrary');
 
 		$isbn = "";
-		if (openbook_utilities_validISBN($OL_ISBN13FIRST)) $isbn=$OL_ISBN13FIRST;
-		elseif (openbook_utilities_validISBN($OL_ISBN10FIRST)) $isbn=$OL_ISBN10FIRST;
+		if (openbook_utilities_validISBN($OL_ID_ISBN13)) $isbn=$OL_ID_ISBN13;
+		elseif (openbook_utilities_validISBN($OL_ID_ISBN10)) $isbn=$OL_ID_ISBN10;
 		elseif (openbook_utilities_validISBN($booknumber)) $isbn = $booknumber;
 		$OL_ISBN = $isbn;
 
