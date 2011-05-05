@@ -20,6 +20,10 @@ class openbook_openlibrary_bookdata {
 
 	function __construct($domain, $booknumber, $timeout, $proxy, $proxyport, $showerrors) {
 
+		//clean book number
+		$booknumber = trim($booknumber);
+		$booknumber = str_replace("'", "", $booknumber); //single quote - prevent problems with string concatenation
+
 		//determine bibkeys
 		//first check if using OL key - legacy or current format
 
@@ -42,17 +46,11 @@ class openbook_openlibrary_bookdata {
 			else {
 				$isbn = $booknumber;
 
-				//clean ISBN
-				$isbn = str_replace("-", "", $isbn); //dash - 13-digit ISBNs often have one, but not used by Open Library
-				$isbn = str_replace(" ", "", $isbn); //spaces
-				$isbn = str_replace("'", "", $isbn); //single quote - prevent problems with string concatenation
-
 				$bibkeys = "ISBN:" . $booknumber;
 			}
 		}
 
 		$url = $domain . "/api/books?bibkeys=".$bibkeys."&jscmd=data&format=json"; //server-side Books API
-
 		$result = openbook_utilities_getUrlContents($url, $timeout, $proxy, $proxyport, OB_OPENLIBRARYDATAUNAVAILABLE_BOOK_LANG, $showerrors);
 
 		$this->bibkeys = $bibkeys;

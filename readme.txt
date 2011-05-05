@@ -3,7 +3,7 @@ Contributors: johnmiedema
 Tags: book, books, reading, book reviews, library, libraries, book covers, COinS, OpenURL
 Requires at least: 2.5.1
 Tested up to: 3.0
-Stable tag: 3.1.2
+Stable tag: 3.1.3
 
 Displays a book's cover image, title, author, links, and other book data from Open Library.
 
@@ -16,8 +16,9 @@ Requirements. To use OpenBook, your server must use PHP 5 or higher, and cURL mu
 
 Find more information or report a problem at the OpenBook support wiki: http://code.google.com/p/openbook4wordpress/.
 
-
 == Installation ==
+
+Use the plugin menu or the following manual steps:
 
 1. Deactivate any previous version of OpenBook through the 'Plugins' menu in WordPress.
 2. Delete any previous version of OpenBook in the `/wp-content/plugins/` directory.
@@ -44,11 +45,11 @@ You can use the Open Library number found in the Open Library URL, e.g., [openbo
 
 * What if the cover image or other data is missing in Open Library?
 
-If an image is missing, OpenBook will show a blank for the image. You can add cover images and other data to Open Library.
+You can add cover images and other data to Open Library.
 
 * What happens if Open Library is slow, down, or unavailable?
 
-Open Library's cover and/or data servers are up most of the time, but this cannot be guaranteed. OpenBook times out in ten seconds (or the value configured in Settings) and displays a message where the data would normally go: "Open Library Data Unavailable". When Open Library becomes available, the book data will be displayed normally.
+Open Library's cover and/or data servers are up most of the time, but this cannot be guaranteed. OpenBook times out in ten seconds (or the value configured in Settings) and displays a message where the data would normally go: "Open Library Data Unavailable". When Open Library becomes available, the book data will be displayed normally. Alternatively, you can use the "HTML" option available when you use the Visual Editor button. This option embeds the book data in your post instead of making a live call to Open Library.
 
 * How do I change the display of OpenBook?
 
@@ -76,6 +77,12 @@ Join the OpenBook discussion list: http://groups.google.com/group/openbook4wordp
 4. Customize the display using OpenBook's templates.
 
 == Changelog ==
+
+= 3.1.3 =
+
+* Cleans white space on the left and right of the booknumber, but no longer removes dashes. Dashes are sometimes used by Open Library.
+* Sometime Open Library returns a non-empty record but the record has no data values. Detects this condition and returns a "no data" message.
+* Minor label changes. Updated the readme file.
 
 = 3.1.2 =
 

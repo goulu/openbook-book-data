@@ -60,8 +60,8 @@ define('OB_OPTION_SYSTEM_PROXYPORT_DETAIL_LANG', __('Goes with the proxy. Just e
 define('OB_OPTIONS_SHOWERRORS_LANG', __('Show Error Details'));
 define('OB_OPTIONS_SHOWERRORS_DETAIL_LANG', __('If checked, OpenBook displays detailed information if an error occurs. Useful for diagnosing problems.'));
 
-define('OB_OPTIONS_SAVETEMPLATES_LANG', __('Save Templates'));
-define('OB_OPTIONS_SAVETEMPLATES_DETAIL_LANG', __('If checked, OpenBook will save your templates when the plugin is deactivated, otherwise it will delete them.'));
+define('OB_OPTIONS_SAVETEMPLATES_LANG', __('Save Settings'));
+define('OB_OPTIONS_SAVETEMPLATES_DETAIL_LANG', __('If checked, OpenBook will save your settings when the plugin is deactivated, otherwise it will delete them.'));
 
 define('OB_OPTIONS_SAVECHANGES_LANG', __('Save Changes'));
 define('OB_OPTIONS_RESET_LANG', __('Reset to Installation Values'));

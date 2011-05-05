@@ -3,7 +3,7 @@
 Plugin Name: OpenBook
 Plugin URI: http://wordpress.org/extend/plugins/openbook-book-data/
 Description: Displays a book's cover image, title, author, links, and other book data from Open Library.
-Version: 3.1.2
+Version: 3.1.3
 Author: John Miedema
 Author URI: http://code.google.com/p/openbook4wordpress/
 
@@ -143,15 +143,13 @@ function openbook_insertbookdata($atts, $content = null) {
 		$bookdata = $bdata->bookdata;
 
 		if (!$bookdata || $bookdata=='{}') return openbook_getDisplayMessage(OB_NOBOOKDATAFORBOOKNUMBER_LANG);
-
 		$bibkeys = $bdata->bibkeys;
 
 		//extract book data values
 		$obj = json_decode($bookdata);
 
 		//-------------------------------------------------------------------------
-		//extract OL_ items for templates
-		//uppercase items correspond to list in help_dataelements.txt, each element can be used in the WordPress options panel
+		//extract individual book data elements from result for use in templates
 
 		$bookdataresult = $obj->{$bibkeys};
 
@@ -163,6 +161,8 @@ function openbook_insertbookdata($atts, $content = null) {
 		$OL_COVER_LARGE = openbook_openlibrary_extractValueExact($cover, 'large');
 
 		$OL_TITLE = openbook_openlibrary_extractValue($bookdataresult, 'title');
+		if (!$OL_TITLE) return openbook_getDisplayMessage(OB_NOBOOKDATAFORBOOKNUMBER_LANG); //sometimes a record is returned with no data
+
 		$OL_SUBTITLE = openbook_openlibrary_extractValue($bookdataresult, 'subtitle');
 
 		$authors = $bookdataresult ->{'authors'};
@@ -474,10 +474,10 @@ class openbook_arguments {
 
 $myopenbook = new MyOpenBook();
 
-add_action('wp_ajax_my_special_action', 'my_action_callback');
+add_action('wp_ajax_my_special_action', 'openbook_action_callback');
 
 //server-side call for ajax visual editor button
-function my_action_callback() {
+function openbook_action_callback() {
 
 	$booknumber = $_POST['booknumber'];
 	$templatenumber = $_POST['templatenumber'];
