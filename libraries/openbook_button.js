@@ -4,7 +4,7 @@
 function openbook_button_preview(booknumber, templatenumber, publisherurl, revisionnumber) {
 
 	var data = {
-		action: 'my_special_action',
+		action: 'openbook_action',
 		booknumber: booknumber,
 		templatenumber: templatenumber,
 		publisherurl: publisherurl,

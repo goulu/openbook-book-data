@@ -78,6 +78,11 @@ Join the OpenBook discussion list: http://groups.google.com/group/openbook4wordp
 
 == Changelog ==
 
+= 3.1.4 =
+
+* Corrected potential conflict with other Ajax-enabled plugins
+* Removed non-empty fix from 3.1.3 - was caused by Ajax conflict
+
 = 3.1.3 =
 
 * Cleans white space on the left and right of the booknumber, but no longer removes dashes. Dashes are sometimes used by Open Library.
