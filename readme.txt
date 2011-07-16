@@ -3,7 +3,7 @@ Contributors: johnmiedema
 Tags: book, books, reading, book reviews, library, libraries, book covers, COinS, OpenURL
 Requires at least: 2.5.1
 Tested up to: 3.0
-Stable tag: 3.1.4
+Stable tag: 3.1.5
 
 Displays a book's cover image, title, author, links, and other book data from Open Library.
 
@@ -78,6 +78,10 @@ Join the OpenBook discussion list: http://groups.google.com/group/openbook4wordp
 
 == Changelog ==
 
+= 3.1.5 =
+
+* Any user who can edit posts will see the the Visual Editor button
+
 = 3.1.4 =
 
 * Corrected potential conflict with other Ajax-enabled plugins
@@ -105,6 +109,10 @@ Join the OpenBook discussion list: http://groups.google.com/group/openbook4wordp
 * Allow use of multiple book number types, including Open Library ID with revision number
 
 == Upgrade Notice ==
+
+= 3.1.5 =
+
+* If non-administrative users need to use the Visual Editor button, then upgrade, otherwise not required.
 
 = 3.1.1 =
 
