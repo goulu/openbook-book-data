@@ -15,13 +15,13 @@ define('OB_OPTION_TEMPLATENUMBER_4', '4');
 define('OB_OPTION_TEMPLATENUMBER_5', '5');
 
 define('OB_OPTION_TEMPLATE1_NAME', 'openbook_template1');
-define('OB_OPTION_TEMPLATE1_VAL', '<div style="clear:both"><div style="float:left;padding-right:10px;padding-bottom:10px;">[OB_COVER_MEDIUM]</div><div style="font-size:18px;font-weight:bold;">[OB_TITLE]</div><div style="font-size:14px;">[OB_AUTHORS]; [OB_PUBLISHER] [OB_PUBLISHYEAR]</div><div style="font-size:10px;">[OB_LINK_WORLDCAT][OB_DOT][OB_READONLINE][OB_DOT][OB_LINK_LIBRARYTHING][OB_DOT][OB_LINK_GOOGLEBOOKS][OB_DOT][OB_LINK_BOOKFINDER]</div>[OB_COINS]</div>');
+define('OB_OPTION_TEMPLATE1_VAL', '<span class="openbook_wrapper1"><span class="openbook_cover1">[OB_COVER_MEDIUM]</span><span class="openbook_title1"> [OB_TITLE]</span><span class="openbook_author1">[OB_AUTHORS]; [OB_PUBLISHER] [OB_PUBLISHYEAR]</span><span class="openbook_links1">[OB_LINK_WORLDCAT][OB_DOT][OB_READONLINE][OB_DOT][OB_LINK_LIBRARYTHING][OB_DOT][OB_LINK_GOOGLEBOOKS][OB_DOT][OB_LINK_BOOKFINDER]</span>[OB_COINS]</span>');
 
 define('OB_OPTION_TEMPLATE2_NAME', 'openbook_template2');
-define('OB_OPTION_TEMPLATE2_VAL', '<div style="clear:both"><div style="float:left;padding-right:5px;padding-bottom:5px;">[OB_COVER_SMALL]</div><div style="font-weight:bold">[OB_TITLE]; [OL_AUTHORFIRST]</div>[OB_COINS]</div>');
+define('OB_OPTION_TEMPLATE2_VAL', '<span class="openbook_wrapper1"><span class="openbook_cover2">[OB_COVER_SMALL]</span><span class="openbook_title2">[OB_TITLE]; [OL_AUTHORFIRST]</span>[OB_COINS]</span>');
 
 define('OB_OPTION_TEMPLATE3_NAME', 'openbook_template3');
-define('OB_OPTION_TEMPLATE3_VAL', '<div><div align="center">[OB_COVER_LARGE]<div style="font-size:10px;">[OB_LINK_WORLDCAT][OB_DOT][OB_READONLINE][OB_DOT][OB_LINK_LIBRARYTHING][OB_DOT][OB_LINK_GOOGLEBOOKS][OB_DOT][OB_LINK_BOOKFINDER]</div></div>[OB_COINS]</div>');
+define('OB_OPTION_TEMPLATE3_VAL', '<span class="openbook_wrapper3"><span class="openbook_cover3">[OB_COVER_LARGE]</span><span class="openbook_links1">[OB_LINK_WORLDCAT][OB_DOT][OB_READONLINE][OB_DOT][OB_LINK_LIBRARYTHING][OB_DOT][OB_LINK_GOOGLEBOOKS][OB_DOT][OB_LINK_BOOKFINDER]</span>[OB_COINS]</span>');
 
 define('OB_OPTION_TEMPLATE4_NAME', 'openbook_template4');
 define('OB_OPTION_TEMPLATE4_VAL', '[OB_TITLE]');

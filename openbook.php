@@ -3,7 +3,7 @@
 Plugin Name: OpenBook
 Plugin URI: http://wordpress.org/extend/plugins/openbook-book-data/
 Description: Displays a book's cover image, title, author, links, and other book data from Open Library.
-Version: 3.1.5
+Version: 3.2.0
 Author: John Miedema
 Author URI: http://code.google.com/p/openbook4wordpress/
 
@@ -40,6 +40,7 @@ class MyOpenBook
 		add_action('admin_menu', 'openbook_add_pages');
 		add_shortcode('openbook', 'openbook_insertbookdata');
 		add_filter('widget_text', 'do_shortcode'); //allows shortcodes in widgets
+		add_action('wp_enqueue_scripts', 'openbook_add_stylesheet'); //add stylesheet
 	}
 
 	function action_admin_init() {
@@ -153,7 +154,7 @@ function openbook_insertbookdata($atts, $content = null) {
 
 		$bookdataresult = $obj->{$bibkeys};
 
-		$OL_URL = openbook_openlibrary_extractValueExact($bookdataresult, 'url');
+		$OL_URL = openbook_openlibrary_extractValue($bookdataresult, 'url');
 
 		$cover = $bookdataresult->{'cover'};
 		$OL_COVER_SMALL = openbook_openlibrary_extractValueExact($cover, 'small');
@@ -487,6 +488,16 @@ function openbook_action_callback() {
 	$ret = openbook_insertbookdata($shortcode_array, null);
 	echo $ret;
 	die();
+}
+
+//add custom stylesheet
+function openbook_add_stylesheet() {
+	$myStyleUrl = plugins_url('libraries/openbook_style.css', __FILE__); // Respects SSL, Style.css is relative to the current file
+    $myStyleFile = WP_PLUGIN_DIR . '/openbook-book-data/libraries/openbook_style.css';
+    if ( file_exists($myStyleFile) ) {
+    	wp_register_style('openbook', $myStyleUrl);
+        wp_enqueue_style( 'openbook');
+    }
 }
 
 ?>

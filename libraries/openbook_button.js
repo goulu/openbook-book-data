@@ -104,9 +104,9 @@ function openbook_button_validations(booknumber, templatenumber, publisherurl, r
 				<br><small>Optional. If you enter a publisher URL it will be used in the OpenBook publisher display element.</small></td>\
 			</tr>\
 			<tr><th>Shortcode or HTML</th>\
-				<td><input type="radio" name="openbook-shortcode" id="openbook-shortcode" value="shortcode" checked />Shortcode\
-					<input type="radio" name="openbook-shortcode" id="openbook-html" value="html" />HTML\
-				<br /><small>The shortcode option inserts a tidy code in your post and makes a live call to Open Library. The HTML option inserts longer, formatted HTML in your post and loads faster for your readers.</small></td>\
+				<td><input type="radio" name="openbook-shortcode" id="openbook-html" value="html" checked />HTML\
+				<input type="radio" name="openbook-shortcode" id="openbook-shortcode" value="shortcode" />Shortcode\
+				<br /><small>The recommended HTML option inserts longer formatted HTML in your post and loads faster for your readers. The shortcode option inserts a tidy code in your post and makes a live call to Open Library.</small></td>\
 			</tr>\
 			</table>\
 			<p class="submit"><input type="button" id="openbook-preview" value="Preview" name="openbook-preview" /> <input type="button" id="openbook-insert" value="Insert" name="openbook-insert" /> <input type="reset" id="openbook-reset" value="Reset" name="openbook-reset" />  <a href="http://code.google.com/p/openbook4wordpress/wiki/index" target="_blank">Help</a></p>\

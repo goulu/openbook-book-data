@@ -2,15 +2,15 @@
 Contributors: johnmiedema
 Tags: book, books, reading, book reviews, library, libraries, book covers, COinS, OpenURL
 Requires at least: 2.5.1
-Tested up to: 3.0
-Stable tag: 3.1.5
+Tested up to: 3.3.1
+Stable tag: 3.2.0
 
 Displays a book's cover image, title, author, links, and other book data from Open Library.
 
 == Description ==
 
 OpenBook is for book reviewers, book bloggers, library webmasters, anyone who wants to put book covers and data on their WordPress blog or website. 
-Use the OpenBook button in the WordPress visual editor or insert an OpenBook 'shortcode' with a book number in a WordPress post, page or widget. OpenBook will display a book cover image, author, and other book data from Open Library (http://openlibrary.org). It also displays links to book websites. Users can control the content and styling through templates. OpenBook inserts COinS to integrate with applications like Zotero. Librarians can point OpenBook to their library records using an OpenURL resolver. 
+Use the OpenBook button in the WordPress visual editor or insert an OpenBook 'shortcode' with a book number in a WordPress post, page or widget. OpenBook will display a book cover image, author, and other book data from Open Library (http://openlibrary.org). It also displays links to book websites. Users can control the content through templates and styling through a stylesheet. OpenBook inserts COinS to integrate with applications like Zotero. Librarians can point OpenBook to their library records using an OpenURL resolver. 
 
 Requirements. To use OpenBook, your server must use PHP 5 or higher, and cURL must be enabled. 
 
@@ -53,15 +53,11 @@ Open Library's cover and/or data servers are up most of the time, but this canno
 
 * How do I change the display of OpenBook?
 
-Change the content, ordering and styling of OpenBook using the templates in the Settings panel for OpenBook.
+Change the content and ordering of display elements using the templates in the Settings panel for OpenBook. Manage the styling by editing the OpenBook stylesheet.
 
 * How do I point OpenBook to my library?
 
 In the OpenBook Settings panel, configure an OpenURL resolver for your library.
-
-* Is it legal to copy book covers?
-
-Publishers generally like that people use their cover images because it promotes book sales. This fact does not necessarily protect the rights of cover illustrators. Also, people may be able to upload covers to Open Library for which they do not have rights. In some countries like the United States, thumbnail representations of artwork fall under fair use provisions of copyright law. The size of a thumbnail varies, but all of the book cover images in Open Library are reduced size. Users of OpenBook are advised to comply with their local laws. If a publisher, illustrator or other rights-holder asks you to take down a cover image, please do so. 
 
 * Where do I get more detailed help?
 
@@ -78,49 +74,16 @@ Join the OpenBook discussion list: http://groups.google.com/group/openbook4wordp
 
 == Changelog ==
 
-= 3.1.5 =
+= 3.2.0 =
 
-* Any user who can edit posts will see the the Visual Editor button
-
-= 3.1.4 =
-
-* Corrected potential conflict with other Ajax-enabled plugins
-* Removed non-empty fix from 3.1.3 - was caused by Ajax conflict
-
-= 3.1.3 =
-
-* Cleans white space on the left and right of the booknumber, but no longer removes dashes. Dashes are sometimes used by Open Library.
-* Sometime Open Library returns a non-empty record but the record has no data values. Detects this condition and returns a "no data" message.
-* Minor label changes. Updated the readme file.
-
-= 3.1.2 =
-
-* Fixed WorldCat link generated from visual form, shortcode method.
-
-= 3.1.1 =
-
-* Fixed problem that added OpenBook 'Settings' link to every plugin.
-
-= 3.1.0 =
-
-* Uses new Open API (server-side Books API) to retreive all book data in a single call => faster load times
-* New button opens Visual Editor form for easy insertion of OpenBook shortcode => no need to remember shortcode syntax
-* Visual Editor form also provides HMTL option instead of shortcodes; embeds HTML in post => even faster load times!
-* Allow use of multiple book number types, including Open Library ID with revision number
+* Moved styling from templates to an independent stylesheet.
+* Fixed bug that split template for titles with a single quote.
+* Replaced divs with spans in default templates. Works better with most themes. Line returns handled through stylesheet.
+* Fonts sized by percent not px. Better for theme compatibility.
+* Added the "Pay it Forward for Literacy" link.
 
 == Upgrade Notice ==
 
-= 3.1.5 =
+= 3.2.0 =
 
-* If non-administrative users need to use the Visual Editor button, then upgrade, otherwise not required.
-
-= 3.1.1 =
-
-* Fixed problem that added OpenBook 'Settings' link to every plugin. Recommend upgrade.
-
-= 3.1.0 =
-
-* Performance and feature enhancements. Recommend upgrade.
-
-
-
+* New stylesheet feature. Fixes bug for titles with single quote. Default styling changes. Recommend upgrade.

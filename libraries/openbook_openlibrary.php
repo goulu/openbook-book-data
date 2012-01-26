@@ -64,7 +64,7 @@ function openbook_openlibrary_getBookData($domain, $booknumber, $timeout, $proxy
 
 function openbook_openlibrary_extractValue($result, $elementname) {
 	$value = $result ->{$elementname};
-	$value = htmlspecialchars($value);
+	$value = htmlspecialchars($value, ENT_QUOTES);
 	return $value;
 }
 

@@ -1,3 +1,35 @@
+<style>
+.pifButton {
+	-moz-box-shadow:inset 0px 1px 0px 0px #ffffff;
+	-webkit-box-shadow:inset 0px 1px 0px 0px #ffffff;
+	box-shadow:inset 0px 1px 0px 0px #ffffff;
+	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #ededed), color-stop(1, #dfdfdf) );
+	background:-moz-linear-gradient( center top, #ededed 5%, #dfdfdf 100% );
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#ededed', endColorstr='#dfdfdf');
+	background-color:#ededed;
+	-moz-border-radius:6px;
+	-webkit-border-radius:6px;
+	border-radius:6px;
+	border:1px solid #dcdcdc;
+	display:inline-block;
+	color:#777777;
+	font-family:arial;
+	font-size:15px;
+	font-weight:bold;
+	padding:6px 24px;
+	text-decoration:none;
+	text-shadow:1px 1px 0px #ffffff;
+}.pifButton:hover {
+	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #dfdfdf), color-stop(1, #ededed) );
+	background:-moz-linear-gradient( center top, #dfdfdf 5%, #ededed 100% );
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#dfdfdf', endColorstr='#ededed');
+	background-color:#dfdfdf;
+}.pifButton:active {
+	position:relative;
+	top:1px;
+}
+</style>
+
 <div class="wrap">
 <?php
 
@@ -134,26 +166,31 @@ function saveOption($option_name, $option_value) {
 <tr valign="top">
 <td width="12%"><?php echo OB_OPTION_TEMPLATE1_LANG ?></td>
 <td><textarea cols="80" rows="8" name="<?php echo OB_OPTION_TEMPLATE1_NAME ?>" ><?php echo $template1; ?></textarea></td>
+<td><a href="http://code.google.com/p/openbook4wordpress/wiki/payitforward" class="pifButton">Pay it Forward for Literacy</a></td>
 </tr>
 
 <tr valign="top">
 <td><?php echo OB_OPTION_TEMPLATE2_LANG ?></td>
 <td><textarea cols="80" rows="8" name="<?php echo OB_OPTION_TEMPLATE2_NAME ?>" ><?php echo $template2; ?></textarea></td>
+<td></td>
 </tr>
 
 <tr valign="top">
 <td><?php echo OB_OPTION_TEMPLATE3_LANG ?></td>
 <td><textarea cols="80" rows="8" name="<?php echo OB_OPTION_TEMPLATE3_NAME ?>" ><?php echo $template3; ?></textarea></td>
+<td></td>
 </tr>
 
 <tr valign="top">
 <td><?php echo OB_OPTION_TEMPLATE4_LANG ?></td>
 <td><textarea cols="80" rows="8" name="<?php echo OB_OPTION_TEMPLATE4_NAME ?>" ><?php echo $template4; ?></textarea></td>
+<td></td>
 </tr>
 
 <tr valign="top">
 <td><?php echo OB_OPTION_TEMPLATE5_LANG ?></td>
 <td><textarea cols="80" rows="8" name="<?php echo OB_OPTION_TEMPLATE5_NAME ?>" ><?php echo $template5; ?></textarea></td>
+<td></td>
 </tr>
 
 </table>
