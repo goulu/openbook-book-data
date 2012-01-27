@@ -76,7 +76,7 @@ Join the OpenBook discussion list: http://groups.google.com/group/openbook4wordp
 
 = 3.2.1 =
 
-* Corrected preview display to match stylesheet. Still a font-size issue in the Visual Editor but everything displays right in Preview and to user.
+* Corrected preview display to match stylesheet.
 
 = 3.2.0 =
 
@@ -90,7 +90,7 @@ Join the OpenBook discussion list: http://groups.google.com/group/openbook4wordp
 
 = 3.2.1 =
 
-* Corrected preview display to match stylesheet. Still a font-size issue in the Visual Editor but everything displays right in Preview and to user.
+* Corrected preview display to match stylesheet.
 
 = 3.2.0 =
 
