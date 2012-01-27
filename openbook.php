@@ -3,7 +3,7 @@
 Plugin Name: OpenBook
 Plugin URI: http://wordpress.org/extend/plugins/openbook-book-data/
 Description: Displays a book's cover image, title, author, links, and other book data from Open Library.
-Version: 3.2.0
+Version: 3.2.1
 Author: John Miedema
 Author URI: http://code.google.com/p/openbook4wordpress/
 
@@ -49,8 +49,10 @@ class MyOpenBook
 		if ( current_user_can( 'edit_posts' ) ) {
 			add_filter( 'mce_buttons', array( $this, 'filter_mce_button' ) );
 			add_filter( 'mce_external_plugins', array( $this, 'filter_mce_plugin' ) );
+			add_filter('mce_css', 'filter_mce_css');
 			$plugin = plugin_basename(__FILE__);
 			add_filter( 'plugin_action_links_' . $plugin, array( $this, 'filter_plugin_actions_links'), 10, 2);
+			openbook_add_stylesheet();
 		}
 	}
 
@@ -120,7 +122,6 @@ function openbook_options_page() {
 function openbook_insertbookdata($atts, $content = null) {
 
 	try {
-
 		//get arguments
 		$args = new openbook_arguments($atts, $content);
 
@@ -498,6 +499,13 @@ function openbook_add_stylesheet() {
     	wp_register_style('openbook', $myStyleUrl);
         wp_enqueue_style( 'openbook');
     }
+}
+
+//returns stylesheet for visual editor
+function filter_mce_css($url) {
+	if(!empty($url)) $url .= ',';
+	$url .= plugin_dir_url( __FILE__ ) . 'libraries/openbook_style.css';
+	return $url;
 }
 
 ?>

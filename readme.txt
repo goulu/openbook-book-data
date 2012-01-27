@@ -3,7 +3,7 @@ Contributors: johnmiedema
 Tags: book, books, reading, book reviews, library, libraries, book covers, COinS, OpenURL
 Requires at least: 2.5.1
 Tested up to: 3.3.1
-Stable tag: 3.2.0
+Stable tag: 3.2.1
 
 Displays a book's cover image, title, author, links, and other book data from Open Library.
 
@@ -74,6 +74,10 @@ Join the OpenBook discussion list: http://groups.google.com/group/openbook4wordp
 
 == Changelog ==
 
+= 3.2.1 =
+
+* Corrected preview display to match stylesheet. Still a font-size issue in the Visual Editor but everything displays right in Preview and to user.
+
 = 3.2.0 =
 
 * Moved styling from templates to an independent stylesheet.
@@ -84,6 +88,14 @@ Join the OpenBook discussion list: http://groups.google.com/group/openbook4wordp
 
 == Upgrade Notice ==
 
+= 3.2.1 =
+
+* Corrected preview display to match stylesheet. Still a font-size issue in the Visual Editor but everything displays right in Preview and to user.
+
 = 3.2.0 =
 
 * New stylesheet feature. Fixes bug for titles with single quote. Default styling changes. Recommend upgrade.
+
+
+
+

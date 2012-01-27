@@ -12,7 +12,7 @@ function openbook_button_preview(booknumber, templatenumber, publisherurl, revis
 	};
 
 	document.getElementById('openbook-response').innerHTML = "... please wait ...";
-
+		
 	//ajaxurl is always defined in the admin header and points to admin-ajax.php
 	jQuery.ajax({
 		type: 'POST',
