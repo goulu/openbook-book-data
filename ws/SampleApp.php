@@ -37,7 +37,7 @@
 <h2>OpenBook Web Service (alpha) - Sample Application</h2>
 
  <form action="#" method="GET">
- 	<div><input type="text" name="booknumber" id="booknumber" value="" /> ISBN (10 or 13 digits, no symbols, e.g., 1896951422). You can also prefix with OLID (e.g., OLID:OL1397864M) or LCID (e.g., LCCN:93005405)</div>
+ 	<div><input type="text" name="booknumber" id="booknumber" value="" /> ISBN (10 or 13 digits, no symbols, e.g., 1896951422). You can also prefix with OLID (e.g., OLID:OL1397864M) or LCCN (e.g., LCCN:93005405)</div>
 	<input type="submit" />
  </form>
 
