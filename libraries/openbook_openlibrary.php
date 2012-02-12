@@ -63,14 +63,34 @@ function openbook_openlibrary_getBookData($domain, $booknumber, $timeout, $proxy
 }
 
 function openbook_openlibrary_extractValue($result, $elementname) {
-	$value = $result ->{$elementname};
-	$value = htmlspecialchars($value, ENT_QUOTES);
+
+	if (property_exists($result, $elementname)) {
+		$value = $result ->{$elementname};
+		$value = htmlspecialchars($value, ENT_QUOTES);
+	}
+	else $value = "";
+
 	return $value;
 }
 
 //no formatting
 function openbook_openlibrary_extractValueExact($result, $elementname) {
-	$value = $result ->{$elementname};
+
+	if (property_exists($result, $elementname)) {
+		$value = $result ->{$elementname};
+	}
+	else $value = "";
+
+	return $value;
+}
+
+function openbook_openlibrary_extractElementObject($result, $elementname) {
+
+	if (property_exists($result, $elementname)) {
+		$value = $result ->{$elementname};
+	}
+	else $value = null;
+
 	return $value;
 }
 
@@ -98,8 +118,10 @@ function openbook_openlibrary_extractFirstFromList($result_array, $elementname) 
 }
 
 function openbook_openlibrary_extractFirstFromArray($result_array, $elementname) {
+
 	if (count($result_array)==0) return "";
-	$result =  $result_array ->{$elementname};
+	$result = openbook_openlibrary_extractValueExact($result_array, $elementname);
+	if ($result == null) return "";
 	$value = $result[0];
 	$value = htmlspecialchars($value);
 	return $value;
