@@ -29,8 +29,6 @@ define('OB_OPTION_TEMPLATE4_VAL', '[OB_TITLE]');
 define('OB_OPTION_TEMPLATE5_NAME', 'openbook_template5');
 define('OB_OPTION_TEMPLATE5_VAL', '[OB_AUTHORS] ([OB_PUBLISHYEAR]). [OB_TITLE]. [OB_PUBLISHER].[OB_COINS]');
 
-define('OB_OPTION_TEMPLATE_EMBEDDED', '<div style="clear:both"><div style="float:left;padding-right:10px;padding-bottom:10px;">[OB_COVER_MEDIUM]</div><div style="font-size:18px;font-weight:bold;">[OB_TITLE]</div><div style="font-size:14px;">[OB_AUTHORS]; [OB_PUBLISHER] [OB_PUBLISHYEAR]</div><div style="font-size:10px;">[OB_LINK_WORLDCAT][OB_DOT][OB_READONLINE][OB_DOT][OB_LINK_LIBRARYTHING][OB_DOT][OB_LINK_GOOGLEBOOKS][OB_DOT][OB_LINK_BOOKFINDER]</div>[OB_COINS]</div>');
-
 define('OB_OPTION_FINDINLIBRARY_OPENURLRESOLVER_NAME', 'openbook_findinlibrary_openurlresolver');
 define('OB_OPTION_FINDINLIBRARY_OPENURLRESOLVER_VAL', '');
 

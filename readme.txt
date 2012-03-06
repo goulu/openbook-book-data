@@ -3,7 +3,7 @@ Contributors: johnmiedema
 Tags: book, books, reading, book reviews, library, libraries, book covers, COinS, OpenURL
 Requires at least: 2.5.1
 Tested up to: 3.3.1
-Stable tag: 3.3.0
+Stable tag: 3.4.0
 
 Displays a book's cover image, title, author, links, and other book data from Open Library.
 
@@ -74,11 +74,19 @@ Join the OpenBook discussion list: http://groups.google.com/group/openbook4wordp
 
 == Changelog ==
 
+= 3.4.0 =
+
+Rolled back to 3.2.1 to eliminate bugs with the alpha web service.
+
 = 3.3.0 =
 
 * Added OpenBook web service (alpha) for hackers
 * Decoupled WordPress functions for future extensibility
 * Minor "good form" corrections for PHP version 5.3
+
+= 3.2.1 =
+
+* Corrected preview display to match stylesheet.
 
 = 3.2.0 =
 
@@ -90,10 +98,22 @@ Join the OpenBook discussion list: http://groups.google.com/group/openbook4wordp
 
 == Upgrade Notice ==
 
+= 3.4.0 =
+
+Rolled back to 3.2.1 to eliminate bugs with the alpha web service.
+
 = 3.3.0 =
 
 * Introduces OpenBook web service (alpha) for hackers. Upgrade optional.
 
+= 3.2.1 =
+
+* Corrected preview display to match stylesheet.
+
 = 3.2.0 =
 
-* New stylesheet feature. Fixes bug for titles with single quote. Default styling changes. Upgrade recommended.
+* New stylesheet feature. Fixes bug for titles with single quote. Default styling changes. Recommend upgrade.
+
+
+
+

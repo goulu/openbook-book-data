@@ -127,7 +127,7 @@ function openbook_html_getFindInLibraryImage($openurlresolver, $openurl, $findin
 
 function openbook_html_getOpenUrl($openurlresolver, $title, $isbn, $authorlist, $publishplace, $publisher, $publishdate, $pages) {
 
-	if (!$openurlresolver) return "";
+	if (!openurlresolver) return "";
 
 	$openurl = $openurlresolver;
 	$openurl .= '?url_ver=Z39.88-2004';
@@ -143,7 +143,7 @@ function openbook_html_getCoins($title, $isbn, $authorlist, $publishplace, $publ
 	$domain = openbook_utilities_getDomain();
 
 	//meta values
-	$coins = '<span class="Z3988" ';
+	$coins .= '<span class="Z3988" ';
 	$coins .= 'title="ctx_ver=Z39.88-2004';
 	$coins .= '&amp;rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Abook';
 	$coins .= '&amp;rfr_id=info%3Asid%2F' . $domain . '%3AOpenBook';
@@ -203,8 +203,8 @@ function openbook_html_getLinks($links) {
 
 	foreach($links as $link) {
 
-		$linktitle = openbook_openlibrary_extractValue($link, 'title');
-		$linkurl = openbook_openlibrary_extractValue($link, 'url');
+		$linktitle = openbook_openlibrary_extractValue($author, 'title');
+		$linkurl = openbook_openlibrary_extractValue($author, 'url');
 
 		$html_link =  "<a href='" . $linkurl . "' title='" . $linktitle . "' >" . $linktitle . "</a>";
 		$linklinks[] = $html_link;
