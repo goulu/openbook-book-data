@@ -127,7 +127,7 @@ function openbook_html_getFindInLibraryImage($openurlresolver, $openurl, $findin
 
 function openbook_html_getOpenUrl($openurlresolver, $title, $isbn, $authorlist, $publishplace, $publisher, $publishdate, $pages) {
 
-	if (!openurlresolver) return "";
+	if (!$openurlresolver) return "";
 
 	$openurl = $openurlresolver;
 	$openurl .= '?url_ver=Z39.88-2004';
@@ -152,7 +152,8 @@ function openbook_html_getCoins($title, $isbn, $authorlist, $publishplace, $publ
 	$coins .= openbook_html_getCoinsContents($title, $isbn, $authorlist, $publishplace, $publisher, $publishdate, $pages);
 
 	//end
-	$coins .= '"></span>';
+	//inserted space so that COinS would not get clipped during Ajax insert from Preview pane
+	$coins .= '">&nbsp;</span>';
 
 	return $coins;
 }
@@ -203,8 +204,8 @@ function openbook_html_getLinks($links) {
 
 	foreach($links as $link) {
 
-		$linktitle = openbook_openlibrary_extractValue($author, 'title');
-		$linkurl = openbook_openlibrary_extractValue($author, 'url');
+		$linktitle = openbook_openlibrary_extractValue($link, 'title');
+		$linkurl = openbook_openlibrary_extractValue($link, 'url');
 
 		$html_link =  "<a href='" . $linkurl . "' title='" . $linktitle . "' >" . $linktitle . "</a>";
 		$linklinks[] = $html_link;

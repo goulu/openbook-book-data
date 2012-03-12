@@ -3,7 +3,7 @@ Contributors: johnmiedema
 Tags: book, books, reading, book reviews, library, libraries, book covers, COinS, OpenURL
 Requires at least: 2.5.1
 Tested up to: 3.3.1
-Stable tag: 3.4.0
+Stable tag: 3.4.2
 
 Displays a book's cover image, title, author, links, and other book data from Open Library.
 
@@ -74,9 +74,13 @@ Join the OpenBook discussion list: http://groups.google.com/group/openbook4wordp
 
 == Changelog ==
 
+= 3.4.2 =
+
+* Minor fixes to COinS, open URL resolver, and Open Library links function
+
 = 3.4.0 =
 
-Rolled back to 3.2.1 to eliminate bugs with the alpha web service.
+* Rolled back to 3.2.1 to eliminate bugs with the alpha web service.
 
 = 3.3.0 =
 
@@ -98,9 +102,13 @@ Rolled back to 3.2.1 to eliminate bugs with the alpha web service.
 
 == Upgrade Notice ==
 
+= 3.4.2 = 
+
+* Minor fixes to COinS, open URL resolver, and Open Library links function
+
 = 3.4.0 =
 
-Rolled back to 3.2.1 to eliminate bugs with the alpha web service.
+* Rolled back to 3.2.1 to eliminate bugs with the alpha web service.
 
 = 3.3.0 =
 

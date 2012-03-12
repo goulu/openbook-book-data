@@ -22,6 +22,9 @@ function openbook_button_preview(booknumber, templatenumber, publisherurl, revis
 		async: false,
 		cache: false
 	}); 
+	
+	
+	
 }
 
 function openbook_button_validations(booknumber, templatenumber, publisherurl, revisionnumber) {
