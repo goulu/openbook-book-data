@@ -2,8 +2,8 @@
 Contributors: johnmiedema
 Tags: book, books, reading, book reviews, library, libraries, book covers, COinS, OpenURL
 Requires at least: 2.5.1
-Tested up to: 3.3.1
-Stable tag: 3.4.2
+Tested up to: 3.8.1
+Stable tag: 3.4.3
 
 Displays a book's cover image, title, author, links, and other book data from Open Library.
 
@@ -73,6 +73,10 @@ Join the OpenBook discussion list: http://groups.google.com/group/openbook4wordp
 4. Customize the display using OpenBook's templates.
 
 == Changelog ==
+
+= 3.4.3 =
+
+* Tested compatibility with 3.8.1
 
 = 3.4.2 =
 
