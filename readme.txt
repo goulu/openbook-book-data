@@ -2,8 +2,8 @@
 Contributors: johnmiedema
 Tags: book, books, reading, book reviews, library, libraries, book covers, COinS, OpenURL
 Requires at least: 2.5.1
-Tested up to: 3.8.1
-Stable tag: 3.4.3
+Tested up to: 3.9.1
+Stable tag: 3.5.1
 
 Displays a book's cover image, title, author, links, and other book data from Open Library.
 
@@ -61,6 +61,10 @@ In the OpenBook Settings panel, configure an OpenURL resolver for your library.
 
 * Where do I get more detailed help?
 
+* I don't see the OpenBook button on my Visual Editor toolbar
+
+Make sure you have the latest version of OpenBook. In the Visual Editor, click CTRL-F5 to force a refresh. The button will appear.
+
 OpenBook support site: http://code.google.com/p/openbook4wordpress/
 Report a problem: http://code.google.com/p/openbook4wordpress/issues/list
 Join the OpenBook discussion list: http://groups.google.com/group/openbook4wordpress
@@ -74,58 +78,18 @@ Join the OpenBook discussion list: http://groups.google.com/group/openbook4wordp
 
 == Changelog ==
 
+= 3.5.0 =
+
+* Compatibility with WordPress 3.9.1
+* Fixed OpenBook button issue for WordPress 3.9
+* Note: if you don't see the button on the toolbar right away, click CTRL-F5 to force a refresh
+* Modified dialog for preview and insert of books
+* HTML is the default option
+
 = 3.4.3 =
 
-* Tested compatibility with 3.8.1
+* Tested compatibility with WordPress 3.8.1
 
 = 3.4.2 =
 
 * Minor fixes to COinS, open URL resolver, and Open Library links function
-
-= 3.4.0 =
-
-* Rolled back to 3.2.1 to eliminate bugs with the alpha web service.
-
-= 3.3.0 =
-
-* Added OpenBook web service (alpha) for hackers
-* Decoupled WordPress functions for future extensibility
-* Minor "good form" corrections for PHP version 5.3
-
-= 3.2.1 =
-
-* Corrected preview display to match stylesheet.
-
-= 3.2.0 =
-
-* Moved styling from templates to an independent stylesheet.
-* Fixed bug that split template for titles with a single quote.
-* Replaced divs with spans in default templates. Works better with most themes. Line returns handled through stylesheet.
-* Fonts sized by percent not px. Better for theme compatibility.
-* Added the "Pay it Forward for Literacy" link.
-
-== Upgrade Notice ==
-
-= 3.4.2 = 
-
-* Minor fixes to COinS, open URL resolver, and Open Library links function
-
-= 3.4.0 =
-
-* Rolled back to 3.2.1 to eliminate bugs with the alpha web service.
-
-= 3.3.0 =
-
-* Introduces OpenBook web service (alpha) for hackers. Upgrade optional.
-
-= 3.2.1 =
-
-* Corrected preview display to match stylesheet.
-
-= 3.2.0 =
-
-* New stylesheet feature. Fixes bug for titles with single quote. Default styling changes. Recommend upgrade.
-
-
-
-

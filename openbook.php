@@ -3,7 +3,7 @@
 Plugin Name: OpenBook
 Plugin URI: http://wordpress.org/extend/plugins/openbook-book-data/
 Description: Displays a book's cover image, title, author, links, and other book data from Open Library.
-Version: 3.4.3
+Version: 3.5.1
 Author: John Miedema
 Author URI: http://code.google.com/p/openbook4wordpress/
 
@@ -36,43 +36,12 @@ class MyOpenBook
 	function __construct() {
 		register_activation_hook(__FILE__, 'ob_activation_check');
 		register_deactivation_hook(__FILE__, 'ob_deactivation');
-		add_action( 'admin_init', array( $this, 'action_admin_init' ) );
 		add_action('admin_menu', 'openbook_add_pages');
+		add_action('admin_head', 'my_add_mce_button_openbook');
 		add_shortcode('openbook', 'openbook_insertbookdata');
 		add_filter('widget_text', 'do_shortcode'); //allows shortcodes in widgets
-		add_action('wp_enqueue_scripts', 'openbook_add_stylesheet'); //add stylesheet
-	}
-
-	function action_admin_init() {
-		// only hook up these filters if we're in the admin panel, and the current user has permission
-		// to edit posts and pages
-		if ( current_user_can( 'edit_posts' ) ) {
-			add_filter( 'mce_buttons', array( $this, 'filter_mce_button' ) );
-			add_filter( 'mce_external_plugins', array( $this, 'filter_mce_plugin' ) );
-			add_filter('mce_css', 'filter_mce_css');
-			$plugin = plugin_basename(__FILE__);
-			add_filter( 'plugin_action_links_' . $plugin, array( $this, 'filter_plugin_actions_links'), 10, 2);
-			openbook_add_stylesheet();
-		}
-	}
-
-	function filter_mce_button( $buttons ) {
-		// add a separation before our button
-		array_push( $buttons, '|', 'openbook_button' );
-		return $buttons;
-	}
-
-	function filter_mce_plugin( $plugins ) {
-		// this plugin file will work the magic of our button
-		$plugins['openbook'] = plugin_dir_url( __FILE__ ) . 'libraries/openbook_button.js';
-		return $plugins;
-	}
-
-	function filter_plugin_actions_links($links, $file)
-	{
-		$settings_link = $settings_link = '<a href="options-general.php?page=openbook_options.php">' . __('Settings') . '</a>';
-		array_unshift($links, $settings_link);
-		return $links;
+		add_action( 'admin_enqueue_scripts', 'openbook_add_stylesheet' ); //add stylesheet for WordPress visual editor
+		add_action('wp_enqueue_scripts', 'openbook_add_stylesheet'); //add stylesheet for final display
 	}
 }
 
@@ -116,6 +85,41 @@ function openbook_add_pages() {
 // displays the page content for the options submenu
 function openbook_options_page() {
 	require_once('openbook_options.php');
+}
+
+function my_add_mce_button_openbook() {
+
+	// check user permissions
+	if ( !current_user_can( 'edit_posts' ) && !current_user_can( 'edit_pages' ) ) {
+		return;
+	}
+
+	// check if WYSIWYG is enabled
+	if ( 'true' == get_user_option( 'rich_editing' ) ) {
+		add_filter( 'mce_external_plugins', 'my_add_tinymce_plugin_openbook' );
+		add_filter( 'mce_buttons', 'my_register_mce_button_openbook' );
+		add_filter('mce_css', 'filter_mce_css');
+		openbook_add_stylesheet(); //add stylesheet to the thickbox dialog
+	}
+}
+
+// declare script for new button
+function my_add_tinymce_plugin_openbook( $plugin_array ) {
+	$plugin_array['my_mce_button_openbook'] = plugin_dir_url( __FILE__ ) . 'libraries/openbook_button.js';
+	return $plugin_array;
+}
+
+// register new button in the editor
+function my_register_mce_button_openbook( $buttons ) {
+	array_push( $buttons, 'my_mce_button_openbook' );
+	return $buttons;
+}
+
+function filter_plugin_actions_links($links, $file)
+{
+	$settings_link = $settings_link = '<a href="options-general.php?page=openbook_options.php">' . __('Settings') . '</a>';
+	array_unshift($links, $settings_link);
+	return $links;
 }
 
 //main function finds and replaces [openbook] shortcodes with HTML
