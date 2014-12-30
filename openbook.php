@@ -519,7 +519,16 @@ class openbook_arguments {
 
 $myopenbook = new MyOpenBook();
 
-add_action('wp_ajax_openbook_action', 'openbook_action_callback');
+add_action( 'wp_ajax_openbook_load_form', 'openbook_load_form' );
+add_action( 'wp_ajax_openbook_action', 'openbook_action_callback' );
+
+// Load modal form in editor
+function openbook_load_form() {
+	ob_start();
+	include( dirname(__FILE__) . '/ajax/openbook_form.php' );
+	echo ob_get_clean();
+	die();
+}
 
 //server-side call for ajax visual editor button
 function openbook_action_callback() {

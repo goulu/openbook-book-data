@@ -1,3 +1,16 @@
+#openbook-dialog-body {
+	overflow-y: scroll;
+}
+
+#openbook-table {
+	max-width: 800px;
+}
+	#openbook-table * {
+		white-space: normal;
+	}
+	#openbook-table th {
+		padding-left: 10px;
+	}
 
 span.openbook_wrapper1 {
 	clear:both;
