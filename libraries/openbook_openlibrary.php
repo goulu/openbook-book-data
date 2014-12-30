@@ -106,6 +106,10 @@ function openbook_openlibrary_extractFirstFromList($result_array, $elementname) 
 
 function openbook_openlibrary_extractFirstFromArray($result_array, $elementname) {
 	if (count($result_array)==0) return "";
+	
+	if( ! property_exists( $result_array, $elementname ) )
+		return '';
+	
 	$result =  $result_array ->{$elementname};
 	$value = $result[0];
 	$value = htmlspecialchars($value);
