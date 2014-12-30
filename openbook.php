@@ -48,8 +48,6 @@ class MyOpenBook
 //handles any processing when the plugin is activated
 function ob_activation_check() {
 
-	$plugin = trim( $GET['plugin'] );
-
 	//if json_decode is missing (< PHP5.2) use local json library
 	if(!function_exists('json_decode')) {
 		include_once('libraries/openbook_json.php');
@@ -61,7 +59,7 @@ function ob_activation_check() {
 
 	//test if cURL is enabled
 	if (!function_exists('curl_init')) {
-		deactivate_plugins($plugin);
+		deactivate_plugins( plugin_basename( __FILE__ ) );
 		wp_die(OB_ENABLECURL_LANG);
 	}
 
@@ -79,7 +77,7 @@ function ob_deactivation() {
 
 // action function for admin hooks
 function openbook_add_pages() {
-	add_options_page('OpenBook', 'OpenBook', 8, 'openbook_options.php', 'openbook_options_page'); // add a new submenu under Options:
+	add_options_page('OpenBook', 'OpenBook', 'manage_options', 'openbook_options.php', 'openbook_options_page'); // add a new submenu under Options:
 }
 
 // displays the page content for the options submenu
@@ -168,6 +166,9 @@ function openbook_insertbookdata($atts, $content = null) {
 
 		$OL_TITLE = openbook_openlibrary_extractValue($bookdataresult, 'title');
 		$OL_SUBTITLE = openbook_openlibrary_extractValue($bookdataresult, 'subtitle');
+		
+		// This data point is not in the OL API
+		$OL_TITLE_PREFIX = '';
 
 		$authors = $bookdataresult ->{'authors'};
 		$OL_AUTHORLIST = openbook_openlibrary_extractList($authors, 'name');
@@ -180,25 +181,42 @@ function openbook_insertbookdata($atts, $content = null) {
 //$contributions - Missing at present, expecting soon from Open Library
 //		$contributions = $bookdataresult ->{'contributions'};
 //		$OL_CONTRIBUTIONLIST = openbook_openlibrary_extractList($contributions, '???');
+		$OL_CONTRIBUTIONLIST = '';
 
 		$publishers = $bookdataresult ->{'publishers'};
 		$OL_PUBLISHERLIST = openbook_openlibrary_extractList($publishers, 'name');
 		$OL_PUBLISHERFIRST = openbook_openlibrary_extractFirstFromList($publishers, 'name');
 
-		$publishplaces = $bookdataresult ->{'publish_places'};
-		$OL_PUBLISHPLACELIST = openbook_openlibrary_extractList($publishplaces, 'name');
-		$OL_PUBLISHPLACEFIRST = openbook_openlibrary_extractFirstFromList($publishplaces, 'name');
+		if( property_exists( $bookdataresult, 'publish_places' ) ) {
+		
+			$publishplaces = $bookdataresult ->{'publish_places'};
+			$OL_PUBLISHPLACELIST = openbook_openlibrary_extractList($publishplaces, 'name');
+			$OL_PUBLISHPLACEFIRST = openbook_openlibrary_extractFirstFromList($publishplaces, 'name');
 
+		} else {
+			$publishplaces = '';
+			$OL_PUBLISHPLACELIST = '';
+			$OL_PUBLISHPLACEFIRST = '';
+		}
+		
 		$OL_PUBLISHDATE = openbook_openlibrary_extractValue($bookdataresult, 'publish_date');
 		$OL_PAGINATION = openbook_openlibrary_extractValue($bookdataresult, 'pagination');
 
-//OL_SIZE MISSING - Missing at present, expecting soon from Open Library
-//		$OL_SIZE = openbook_openlibrary_extractValue($bookdataresult, 'physical_dimensions');
+		if( property_exists( $bookdataresult, 'physical_dimensions' ) ) {
+			//OL_SIZE MISSING - Missing at present, expecting soon from Open Library
+//			$OL_SIZE = openbook_openlibrary_extractValue($bookdataresult, 'physical_dimensions');
+		} else {
+			$OL_SIZE = '';
+		}
 
 		$OL_PAGES = openbook_openlibrary_extractValue($bookdataresult, 'number_of_pages');
 
-//OL_FORMAT MISSING - Missing at present, expecting soon from Open Library
-//		$OL_FORMAT = openbook_openlibrary_extractValue($bookdataresult, 'physical_format');
+		if( property_exists( $bookdataresult, 'physical_format' ) ) {
+			//OL_FORMAT MISSING - Missing at present, expecting soon from Open Library
+//			$OL_FORMAT = openbook_openlibrary_extractValue($bookdataresult, 'physical_format');
+		} else {
+			$OL_FORMAT = '';
+		}
 
 		$OL_WEIGHT = openbook_openlibrary_extractValue($bookdataresult, 'weight');
 
@@ -223,21 +241,44 @@ function openbook_insertbookdata($atts, $content = null) {
 		$subjects = $bookdataresult ->{'subjects'};
 		$OL_SUBJECTLIST = openbook_openlibrary_extractList($subjects, 'name');
 
-//OL_DESCRIPTION - Missing at present, expecting soon from Open Library
-//		$OL_DESCRIPTION = openbook_openlibrary_extractValueFromPair($bookdataresult, 'description');
+		if( property_exists( $bookdataresult, 'description' ) ) {
+			//OL_DESCRIPTION - Missing at present, expecting soon from Open Library
+//			$OL_DESCRIPTION = openbook_openlibrary_extractValueFromPair($bookdataresult, 'description');
+		} else {
+			$OL_DESCRIPTION = '';
+		}
 
-		$ebooks = $bookdataresult ->{'ebooks'};
-		$OL_PREVIEW_URL = openbook_openlibrary_extractFirstFromList($ebooks, 'preview_url');
+		if( property_exists( $bookdataresult, 'ebooks' ) ) {
+			$ebooks = $bookdataresult ->{'ebooks'};
+			$OL_PREVIEW_URL = openbook_openlibrary_extractFirstFromList($ebooks, 'preview_url');
+		} else {
+			$ebooks = '';
+			$OL_PREVIEW_URL = '';
+		}
 
-		$links = $bookdataresult ->{'links'};
-		$OL_LINKTITLES = openbook_openlibrary_extractList($links, 'title');
-		$OL_LINKURLS = openbook_openlibrary_extractList($links, 'url');
-		$OL_LINKTITLEFIRST = openbook_openlibrary_extractFirstFromList($links, 'title');
-		$OL_LINKURLFIRST = openbook_openlibrary_extractFirstFromList($links, 'url');
-
-		$excerpts = $bookdataresult ->{'excerpts'};
-		$OL_EXCERPT_COMMENT_FIRST = openbook_openlibrary_extractFirstFromList($excerpts, 'comment');
-		$OL_EXCERPT_TEXT_FIRST = openbook_openlibrary_extractFirstFromList($excerpts, 'text');
+		if( property_exists( $bookdataresult, 'links' ) ) {
+			$links = $bookdataresult ->{'links'};
+			$OL_LINKTITLES = openbook_openlibrary_extractList($links, 'title');
+			$OL_LINKURLS = openbook_openlibrary_extractList($links, 'url');
+			$OL_LINKTITLEFIRST = openbook_openlibrary_extractFirstFromList($links, 'title');
+			$OL_LINKURLFIRST = openbook_openlibrary_extractFirstFromList($links, 'url');
+		} else {
+			$links = '';
+			$OL_LINKTITLES = '';
+			$OL_LINKURLS = '';
+			$OL_LINKTITLEFIRST = '';
+			$OL_LINKURLFIRST = '';
+		}
+		
+		if( property_exists( $bookdataresult, 'excerpts' ) ) {
+			$excerpts = $bookdataresult ->{'excerpts'};
+			$OL_EXCERPT_COMMENT_FIRST = openbook_openlibrary_extractFirstFromList($excerpts, 'comment');
+			$OL_EXCERPT_TEXT_FIRST = openbook_openlibrary_extractFirstFromList($excerpts, 'text');
+		} else {
+			$excerpts = '';
+			$OL_EXCERPT_COMMENT_FIRST = '';
+			$OL_EXCERPT_TEXT_FIRST = '';
+		}
 
 		//-------------------------------------------------------------------------
 		//prepare formatted OB data elements, prefixed with $OB_
@@ -460,7 +501,7 @@ class openbook_arguments {
 
 		//set return values
 		$this->booknumber=$booknumber;
-		$this->revisionnumber=$revisionnumber;
+		$this->revisionnumber= empty( $revisionnumber ) ? 0 : $revisionnumber;
 		$this->template=$template;
 		$this->publisherurl=$publisherurl;
 		$this->template=$template;

@@ -63,6 +63,10 @@ function openbook_openlibrary_getBookData($domain, $booknumber, $timeout, $proxy
 }
 
 function openbook_openlibrary_extractValue($result, $elementname) {
+	
+	if( ! property_exists( $result, $elementname ) )
+		return '';
+	
 	$value = $result ->{$elementname};
 	$value = htmlspecialchars($value, ENT_QUOTES);
 	return $value;
@@ -70,6 +74,9 @@ function openbook_openlibrary_extractValue($result, $elementname) {
 
 //no formatting
 function openbook_openlibrary_extractValueExact($result, $elementname) {
+	
+	if( ! property_exists( $result, $elementname ) )
+		return '';
 	$value = $result ->{$elementname};
 	return $value;
 }

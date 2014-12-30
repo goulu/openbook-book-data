@@ -143,6 +143,7 @@ function openbook_html_getCoins($title, $isbn, $authorlist, $publishplace, $publ
 	$domain = openbook_utilities_getDomain();
 
 	//meta values
+	$coins = '';
 	$coins .= '<span class="Z3988" ';
 	$coins .= 'title="ctx_ver=Z39.88-2004';
 	$coins .= '&amp;rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Abook';
@@ -198,7 +199,7 @@ function openbook_html_getCoinsContents($title, $isbn, $authorlist, $publishplac
 
 function openbook_html_getLinks($links) {
 
-	if (count($links)==0) return "";
+	if ( empty( $links ) ) return "";
 
 	$linklinks = array();
 
