@@ -49,12 +49,22 @@ class openbook_openlibrary_bookdata {
 				$bibkeys = "ISBN:" . $booknumber;
 			}
 		}
-
+		
+		if( $result = get_transient( $bibkeys ) ) {
+			$this->bibkeys = $bibkeys;
+			$this->bookdata = $result;
+			return;
+		}
+		
 		$url = $domain . "/api/books?bibkeys=".$bibkeys."&jscmd=data&format=json"; //server-side Books API
 		$result = openbook_utilities_getUrlContents($url, $timeout, $proxy, $proxyport, OB_OPENLIBRARYDATAUNAVAILABLE_BOOK_LANG, $showerrors);
 
 		$this->bibkeys = $bibkeys;
 		$this->bookdata = $result;
+		
+		// Store results for one hour (use filter to override)
+		set_transient( $bibkeys, $result, apply_filters( 'openbook_cache_lifetime', ( 60 * 60 ) ) );
+		
 	}
 }
 
