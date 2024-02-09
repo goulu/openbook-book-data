@@ -25,7 +25,7 @@ define('OB_OLSERVERERROR_LANG', __('Open Library Server Error'));
 //options page
 
 define('OB_OPTIONS_TEMPLATETEMPLATES_LANG', __('Templates'));
-define('OB_OPTIONS_TEMPLATETEMPLATES_DETAIL_LANG', __('Modify these templates to change the content and order of the OpenBook display elements. Template 1 is the default, but you can change the template number in the Visual Editor dropdown or in a shortcode, e.g., [openbook booknumber="123" templatenumber="2"]. Modify the template styles by editing the OpenBook stylesheet found in the plugin folder. For more information visit the '));
+define('OB_OPTIONS_TEMPLATETEMPLATES_DETAIL_LANG', __('Modify these templates to change the content and order of the OpenBook display elements. Template 1 is the default, but you can change the template number in the Visual Editor dropdown or in a shortcode, e.g., [openbook booknumber="123" templatenumber="2"]. Modify the template styles by editing the OpenBook stylesheet found in the plugin folder.'));
 
 define('OB_OPTION_TEMPLATE1_LANG', __('Template 1 (default)'));
 define('OB_OPTION_TEMPLATE2_LANG', __('Template 2 (e.g., smaller cover for widgets)'));
