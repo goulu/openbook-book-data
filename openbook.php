@@ -125,9 +125,10 @@ function filter_plugin_actions_links($links, $file)
 //main function finds and replaces [openbook] shortcodes with HTML
 function openbook_insertbookdata($atts, $content = null) {
 
-	try {
+try {
 		//get arguments
 		$args = new openbook_arguments($atts, $content);
+		
 
 		$booknumber=$args->booknumber;
 		$revisionnumber=$args->revisionnumber;
@@ -165,7 +166,7 @@ function openbook_insertbookdata($atts, $content = null) {
 		$OL_COVER_SMALL = openbook_openlibrary_extractValueExact($cover, 'small');
 		$OL_COVER_MEDIUM = openbook_openlibrary_extractValueExact($cover, 'medium');
 		$OL_COVER_LARGE = openbook_openlibrary_extractValueExact($cover, 'large');
-
+		$OL_TITLE_PREFIX = openbook_openlibrary_extractValue($bookdataresult, 'title_prefix');
 		$OL_TITLE = openbook_openlibrary_extractValue($bookdataresult, 'title');
 		$OL_SUBTITLE = openbook_openlibrary_extractValue($bookdataresult, 'subtitle');
 
@@ -177,28 +178,26 @@ function openbook_insertbookdata($atts, $content = null) {
 
 		$OL_BYSTATEMENT = openbook_openlibrary_extractValueExact($bookdataresult, 'by_statement');
 
-//$contributions - Missing at present, expecting soon from Open Library
-//		$contributions = $bookdataresult ->{'contributions'};
-//		$OL_CONTRIBUTIONLIST = openbook_openlibrary_extractList($contributions, '???');
+		$contributions = $bookdataresult ->{'contributions'} ?? null;
+		$OL_CONTRIBUTIONLIST = openbook_openlibrary_extractList($contributions, '???');
 
 		$publishers = $bookdataresult ->{'publishers'};
 		$OL_PUBLISHERLIST = openbook_openlibrary_extractList($publishers, 'name');
 		$OL_PUBLISHERFIRST = openbook_openlibrary_extractFirstFromList($publishers, 'name');
 
-		$publishplaces = $bookdataresult ->{'publish_places'};
+		$publishplaces = $bookdataresult ->{'publish_places'} ?? null;
 		$OL_PUBLISHPLACELIST = openbook_openlibrary_extractList($publishplaces, 'name');
 		$OL_PUBLISHPLACEFIRST = openbook_openlibrary_extractFirstFromList($publishplaces, 'name');
 
 		$OL_PUBLISHDATE = openbook_openlibrary_extractValue($bookdataresult, 'publish_date');
 		$OL_PAGINATION = openbook_openlibrary_extractValue($bookdataresult, 'pagination');
 
-//OL_SIZE MISSING - Missing at present, expecting soon from Open Library
-//		$OL_SIZE = openbook_openlibrary_extractValue($bookdataresult, 'physical_dimensions');
+		$OL_SIZE = openbook_openlibrary_extractValue($bookdataresult, 'physical_dimensions');
 
 		$OL_PAGES = openbook_openlibrary_extractValue($bookdataresult, 'number_of_pages');
 
-//OL_FORMAT MISSING - Missing at present, expecting soon from Open Library
-//		$OL_FORMAT = openbook_openlibrary_extractValue($bookdataresult, 'physical_format');
+
+		$OL_FORMAT = openbook_openlibrary_extractValue($bookdataresult, 'physical_format');
 
 		$OL_WEIGHT = openbook_openlibrary_extractValue($bookdataresult, 'weight');
 
@@ -223,19 +222,18 @@ function openbook_insertbookdata($atts, $content = null) {
 		$subjects = $bookdataresult ->{'subjects'};
 		$OL_SUBJECTLIST = openbook_openlibrary_extractList($subjects, 'name');
 
-//OL_DESCRIPTION - Missing at present, expecting soon from Open Library
-//		$OL_DESCRIPTION = openbook_openlibrary_extractValueFromPair($bookdataresult, 'description');
+		$OL_DESCRIPTION = openbook_openlibrary_extractValue($bookdataresult, 'description');
 
-		$ebooks = $bookdataresult ->{'ebooks'};
+		$ebooks = $bookdataresult ->{'ebooks'}?? null;
 		$OL_PREVIEW_URL = openbook_openlibrary_extractFirstFromList($ebooks, 'preview_url');
 
-		$links = $bookdataresult ->{'links'};
+		$links = $bookdataresult ->{'links'}?? null;
 		$OL_LINKTITLES = openbook_openlibrary_extractList($links, 'title');
 		$OL_LINKURLS = openbook_openlibrary_extractList($links, 'url');
 		$OL_LINKTITLEFIRST = openbook_openlibrary_extractFirstFromList($links, 'title');
 		$OL_LINKURLFIRST = openbook_openlibrary_extractFirstFromList($links, 'url');
 
-		$excerpts = $bookdataresult ->{'excerpts'};
+		$excerpts = $bookdataresult ->{'excerpts'}?? null;
 		$OL_EXCERPT_COMMENT_FIRST = openbook_openlibrary_extractFirstFromList($excerpts, 'comment');
 		$OL_EXCERPT_TEXT_FIRST = openbook_openlibrary_extractFirstFromList($excerpts, 'text');
 
@@ -460,7 +458,7 @@ class openbook_arguments {
 
 		//set return values
 		$this->booknumber=$booknumber;
-		$this->revisionnumber=$revisionnumber;
+		$this->revisionnumber=empty($revisionnumber) ? NULL : $revisionnumber;
 		$this->template=$template;
 		$this->publisherurl=$publisherurl;
 		$this->template=$template;

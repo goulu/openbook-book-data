@@ -88,7 +88,7 @@ function openbook_openlibrary_extractValueExact($result, $elementname) {
 	if( ! property_exists((object) $result, $elementname ) )
 		return '';
 	$value = $result ->{$elementname};
-	return $value;
+	return $value || '';
 }
 
 function openbook_openlibrary_extractList($result_array, $elementname) {
@@ -97,17 +97,18 @@ function openbook_openlibrary_extractList($result_array, $elementname) {
 
 	$result_values = array();
 
-	foreach($result_array as $result) {
+	foreach((array) $result_array as $result) {
 		$result_value = openbook_openlibrary_extractValue($result, $elementname);
 		$result_values[] = $result_value;
 	}
 
 	$result_list = join(', ', $result_values);
 
-	return $result_list;
+	return $result_list || '';
 }
 
 function openbook_openlibrary_extractFirstFromList($result_array, $elementname) {
+	if (is_null($result_array) ) return "";
 	if (is_countable($result_array) && count($result_array)==0) return "";
 	$result = $result_array[0];
 	$result_value = openbook_openlibrary_extractValue($result, $elementname);
@@ -115,6 +116,7 @@ function openbook_openlibrary_extractFirstFromList($result_array, $elementname) 
 }
 
 function openbook_openlibrary_extractFirstFromArray($result_array, $elementname) {
+	if (is_null($result_array) ) return "";
 	if (is_countable($result_array) && count($result_array)==0) return "";
 	
 	if( ! property_exists( $result_array, $elementname ) )

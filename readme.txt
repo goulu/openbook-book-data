@@ -1,9 +1,9 @@
 === OpenBook Book Data ===
-Contributors: johnmiedema
+Contributors: johnmiedema, philippe guglielmetti
 Tags: book, books, reading, book reviews, library, libraries, book covers, COinS, OpenURL
 Requires at least: 2.5.1
 Tested up to: 4.8.0
-Stable tag: 3.5.2
+Stable tag: 3.5.3
 
 Displays a book's cover image, title, author, links, and other book data from Open Library.
 
@@ -62,6 +62,10 @@ Make sure you have the latest version of OpenBook. In the Visual Editor, click C
 4. Customize the display using OpenBook's templates.
 
 == Changelog ==
+
+= 3.5.3 =
+* updated to PHP 8.0
+* tested with WordPress 6.4.3
 
 = 3.5.2 =
 
